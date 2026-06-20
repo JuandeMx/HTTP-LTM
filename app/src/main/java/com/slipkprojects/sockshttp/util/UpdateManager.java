@@ -68,7 +68,16 @@ public class UpdateManager {
                         updateUrl += "?t=" + System.currentTimeMillis();
                     }
 
-                    HttpURLConnection conn = (HttpURLConnection) new URL(updateUrl).openConnection();
+                    java.net.Proxy proxy = java.net.Proxy.NO_PROXY;
+                    if (com.slipkprojects.ultrasshservice.logger.SkStatus.isTunnelActive()) {
+                        int socksPort = 1080;
+                        try {
+                            socksPort = Integer.parseInt(config.getPrivString(Settings.PORTA_LOCAL_KEY));
+                        } catch (Exception e) {}
+                        proxy = new java.net.Proxy(java.net.Proxy.Type.SOCKS, java.net.InetSocketAddress.createUnresolved("127.0.0.1", socksPort));
+                    }
+
+                    HttpURLConnection conn = (HttpURLConnection) new URL(updateUrl).openConnection(proxy);
                     conn.setConnectTimeout(15000);
                     conn.setReadTimeout(15000);
                     conn.setInstanceFollowRedirects(true);
@@ -78,7 +87,7 @@ public class UpdateManager {
                     while ((status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == 307 || status == 308) && redirectCount < 5) {
                         String newUrl = conn.getHeaderField("Location");
                         conn.disconnect();
-                        conn = (HttpURLConnection) new URL(newUrl).openConnection();
+                        conn = (HttpURLConnection) new URL(newUrl).openConnection(proxy);
                         conn.setConnectTimeout(15000);
                         conn.setReadTimeout(15000);
                         status = conn.getResponseCode();
@@ -213,7 +222,17 @@ public class UpdateManager {
             @Override
             public void run() {
                 try {
-                    HttpURLConnection conn = (HttpURLConnection) new URL(apkUrl).openConnection();
+                    Settings config = new Settings(context);
+                    java.net.Proxy proxy = java.net.Proxy.NO_PROXY;
+                    if (com.slipkprojects.ultrasshservice.logger.SkStatus.isTunnelActive()) {
+                        int socksPort = 1080;
+                        try {
+                            socksPort = Integer.parseInt(config.getPrivString(Settings.PORTA_LOCAL_KEY));
+                        } catch (Exception e) {}
+                        proxy = new java.net.Proxy(java.net.Proxy.Type.SOCKS, java.net.InetSocketAddress.createUnresolved("127.0.0.1", socksPort));
+                    }
+
+                    HttpURLConnection conn = (HttpURLConnection) new URL(apkUrl).openConnection(proxy);
                     conn.setConnectTimeout(30000);
                     conn.setReadTimeout(30000);
                     conn.setInstanceFollowRedirects(true);
@@ -223,7 +242,7 @@ public class UpdateManager {
                     while ((status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == 307 || status == 308) && redirectCount < 5) {
                         String newUrl = conn.getHeaderField("Location");
                         conn.disconnect();
-                        conn = (HttpURLConnection) new URL(newUrl).openConnection();
+                        conn = (HttpURLConnection) new URL(newUrl).openConnection(proxy);
                         conn.setConnectTimeout(30000);
                         conn.setReadTimeout(30000);
                         status = conn.getResponseCode();
