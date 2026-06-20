@@ -130,11 +130,17 @@ public class ConfigParser
 			}
 
 			try {
+				String _useV2ray = mConfigFile.getProperty("use_v2ray");
+				boolean isV2ray = _useV2ray != null && _useV2ray.equals("1");
+
 				String mServidor = deobfuscateString(mConfigFile.getProperty(Settings.SERVIDOR_KEY), mContext);
 				String mServidorPorta = deobfuscateString(mConfigFile.getProperty(Settings.SERVIDOR_PORTA_KEY), mContext);
 				String mUsuario = deobfuscateString(mConfigFile.getProperty(Settings.USUARIO_KEY), mContext);
 				String mSenha = deobfuscateString(mConfigFile.getProperty(Settings.SENHA_KEY), mContext);
-				int mPortaLocal = Integer.parseInt(mConfigFile.getProperty(Settings.PORTA_LOCAL_KEY));
+				int mPortaLocal = 1080;
+				try {
+					mPortaLocal = Integer.parseInt(mConfigFile.getProperty(Settings.PORTA_LOCAL_KEY));
+				} catch(Exception e) {}
 				int mTunnelType = Settings.bTUNNEL_TYPE_SSH_DIRECT;
 				
 				// ssh hwid auth flag
@@ -154,7 +160,7 @@ public class ConfigParser
 					}
 				}
 				
-				if (mServidor == null) {
+				if (!isV2ray && mServidor == null) {
 					throw new Exception();
 				}
 
@@ -190,10 +196,10 @@ public class ConfigParser
 					prefsEdit.putBoolean(Settings.CONFIG_INPUT_PASSWORD_KEY, false);
 				}
 				
-				prefsEdit.putString(Settings.SERVIDOR_KEY, mServidor);
-				prefsEdit.putString(Settings.SERVIDOR_PORTA_KEY, mServidorPorta);
-				prefsEdit.putString(Settings.USUARIO_KEY, mUsuario);
-				prefsEdit.putString(Settings.SENHA_KEY, mSenha);
+				prefsEdit.putString(Settings.SERVIDOR_KEY, mServidor != null ? mServidor : "");
+				prefsEdit.putString(Settings.SERVIDOR_PORTA_KEY, mServidorPorta != null ? mServidorPorta : "");
+				prefsEdit.putString(Settings.USUARIO_KEY, mUsuario != null ? mUsuario : "");
+				prefsEdit.putString(Settings.SENHA_KEY, mSenha != null ? mSenha : "");
 				prefsEdit.putString(Settings.PORTA_LOCAL_KEY, Integer.toString(mPortaLocal));
 
 				String unified = deobfuscateString(mConfigFile.getProperty("unified_input"), mContext);
