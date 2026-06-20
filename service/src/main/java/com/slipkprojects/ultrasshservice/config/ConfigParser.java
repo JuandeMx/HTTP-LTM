@@ -84,7 +84,8 @@ public class ConfigParser
 
 			// validade check
 			String msg = mConfigFile.getProperty(SETTING_AUTOR_MSG);
-			boolean mIsProteger = mConfigFile.getProperty(SETTING_PROTEGER).equals("1") ? true : false;
+			String protegerProp = mConfigFile.getProperty(SETTING_PROTEGER);
+			boolean mIsProteger = protegerProp != null && protegerProp.equals("1");
 			long mValidade = 0;
 			
 			try {
@@ -148,7 +149,7 @@ public class ConfigParser
 				prefsEdit.putBoolean(Settings.HWID_AUTH_KEY, useSshHwid);
 				
 				String _tunnelType = mConfigFile.getProperty(Settings.TUNNELTYPE_KEY);
-				if (!_tunnelType.isEmpty()) {
+				if (_tunnelType != null && !_tunnelType.isEmpty()) {
 					/**
 					* Mantêm compatibilidade
 					*/
@@ -169,7 +170,8 @@ public class ConfigParser
 				prefsEdit.putString(Settings.PROXY_IP_KEY, _proxyIp != null ? _proxyIp : "");
 				prefsEdit.putString(Settings.PROXY_PORTA_KEY, _proxyPort != null ? _proxyPort : "");
 
-				prefsEdit.putBoolean(Settings.PROXY_USAR_DEFAULT_PAYLOAD, !mConfigFile.getProperty(Settings.PROXY_USAR_DEFAULT_PAYLOAD).equals("1") ? false : true);
+				String _defaultPayload = mConfigFile.getProperty(Settings.PROXY_USAR_DEFAULT_PAYLOAD);
+				prefsEdit.putBoolean(Settings.PROXY_USAR_DEFAULT_PAYLOAD, _defaultPayload == null || _defaultPayload.equals("1"));
 				
 				String _customPayload = deobfuscateString(mConfigFile.getProperty(Settings.CUSTOM_PAYLOAD_KEY), mContext);
 				prefsEdit.putString(Settings.CUSTOM_PAYLOAD_KEY, _customPayload != null ? _customPayload : "");
