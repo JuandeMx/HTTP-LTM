@@ -1,0 +1,84 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'com.slipkprojects.sockshttp'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.httpltm.app"
+		minSdkVersion 21
+        targetSdkVersion 34
+        versionCode 32
+        versionName "1.1.9"
+		multiDexEnabled true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        buildConfig true
+        aidl true
+    }
+    signingConfigs {
+        release {
+            storeFile file('freelatam_release.jks')
+            storePassword 'freelatam123'
+            keyAlias 'Maximus'
+            keyPassword 'freelatam123'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+	//api 'com.android.support:multidex:1.0.3'
+	
+    //api fileTree(dir: 'libs', include: ['*.jar'])
+	
+    /*api ('android.arch.core:runtime:+') {
+        force = true
+    }*/
+	
+	// support libs
+    implementation 'com.android.support:appcompat-v7:25.+'
+	implementation 'com.android.support:preference-v7:25.+'
+	implementation 'com.android.support:design:25.+'
+	implementation 'com.scottyab:rootbeer-lib:0.1.1'
+	
+	// outros
+	implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+	implementation 'com.google.android.gms:play-services-ads-lite:11.8.0'
+	
+	//11.8.0
+	//api 'com.scottyab:secure-preferences-lib:0.1.7'
+	//implementation 'com.google.android.gms:play-services-ads-lite:15.0.1'
+	//implementation 'com.flurry.android:analytics:12.3.0'
+	//api 'com.flurry.android:analytics:12.1.0'
+	//api 'com.android.support:multidex:1.0.3'
+	
+	implementation project(':service')
+	implementation project(':style')
+}
+
+// Add custom Gradle task to build Hysteria native library
+// Place this after the dependencies block in app/build.gradle
+
+tasks.register("buildHysteria", Exec) {
+    description = "Compile Hysteria v2 from Go source to libhysteria.so"
+    group = "build"
+    // Assumes Go is installed and Hysteria source is under ./hysteria (project root)
+    commandLine "go", "build", "-buildmode=c-shared", "-o", "src/main/jniLibs/arm64-v8a/libhysteria.so", "./hysteria"
+    // If you need to set environment variables, you can add: environment "GOOS", "android"
+}
