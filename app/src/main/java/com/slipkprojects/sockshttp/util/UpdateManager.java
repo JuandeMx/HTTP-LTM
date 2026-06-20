@@ -152,6 +152,22 @@ public class UpdateManager {
             .setPositiveButton("Actualizar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        if (!context.getPackageManager().canRequestPackageInstalls()) {
+                            Intent settingsIntent = new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                            settingsIntent.setData(Uri.parse("package:" + context.getPackageName()));
+                            if (!(context instanceof android.app.Activity)) {
+                                settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            }
+                            try {
+                                context.startActivity(settingsIntent);
+                                Toast.makeText(context, "Por favor, permite la instalación de fuentes desconocidas para esta aplicación y vuelve a intentarlo.", Toast.LENGTH_LONG).show();
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error opening settings", e);
+                            }
+                            return;
+                        }
+                    }
                     downloadAndInstallApk(context, apkUrl);
                 }
             })
@@ -273,6 +289,21 @@ public class UpdateManager {
     }
 
     private static void installApk(Context context, File file) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!context.getPackageManager().canRequestPackageInstalls()) {
+                Intent settingsIntent = new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                settingsIntent.setData(Uri.parse("package:" + context.getPackageName()));
+                settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                try {
+                    context.startActivity(settingsIntent);
+                    Toast.makeText(context, "Por favor, permite la instalación de fuentes desconocidas para esta aplicación y vuelve a intentarlo.", Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error starting manage unknown app sources settings", e);
+                }
+                return;
+            }
+        }
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             String authority = context.getPackageName() + ".provider";
