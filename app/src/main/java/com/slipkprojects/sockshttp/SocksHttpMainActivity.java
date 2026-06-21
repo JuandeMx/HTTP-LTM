@@ -109,6 +109,7 @@ public class SocksHttpMainActivity extends BaseActivity
 	private DrawerLog mDrawer;
 	private DrawerPanelMain mDrawerPanel;
 	private AdView adsBannerView;
+	private AdsManager adsManager;
 	
 	private Settings mConfig;
 	private Toolbar toolbar_main;
@@ -155,7 +156,8 @@ public class SocksHttpMainActivity extends BaseActivity
 
 		// AdView Initialization
 		FrameLayout adContainer = (FrameLayout) findViewById(R.id.adBannerMainContainer);
-		if (adContainer != null && TunnelUtils.isNetworkOnline(this)) {
+		if (adContainer != null) {
+			Log.d(TAG, "Initializing AdMob Banner View...");
 			adsBannerView = new AdView(this);
 			adsBannerView.setAdSize(com.google.android.gms.ads.AdSize.BANNER);
 			if (!BuildConfig.DEBUG) {
@@ -166,14 +168,38 @@ public class SocksHttpMainActivity extends BaseActivity
 			adsBannerView.setAdListener(new AdListener() {
 				@Override
 				public void onAdLoaded() {
+					Log.d(TAG, "AdMob Banner loaded successfully.");
 					if (adsBannerView != null) {
 						adsBannerView.setVisibility(View.VISIBLE);
 					}
+				}
+
+				@Override
+				public void onAdFailedToLoad(int errorCode) {
+					Log.e(TAG, "AdMob Banner failed to load with error code: " + errorCode);
+				}
+
+				@Override
+				public void onAdOpened() {
+					Log.d(TAG, "AdMob Banner opened.");
+				}
+
+				@Override
+				public void onAdLeftApplication() {
+					Log.d(TAG, "AdMob Banner left application.");
+				}
+
+				@Override
+				public void onAdClosed() {
+					Log.d(TAG, "AdMob Banner closed.");
 				}
 			});
 			adContainer.addView(adsBannerView);
 			adsBannerView.loadAd(new AdRequest.Builder().build());
 		}
+
+		// Initialize AdsManager for Interstitial ads
+		adsManager = AdsManager.newInstance(this);
 		
 		toolbar_main = (Toolbar) findViewById(R.id.toolbar_main);
 		setSupportActionBar(toolbar_main);
@@ -857,6 +883,14 @@ public class SocksHttpMainActivity extends BaseActivity
 			@Override
 			public void run() {
 				doUpdateLayout();
+				if (level == ConnectionStatus.LEVEL_CONNECTED) {
+					if (TunnelUtils.isNetworkOnline(SocksHttpMainActivity.this)) {
+						if (adsManager != null) {
+							Log.d(TAG, "Server connected and online. Loading interstitial ad...");
+							adsManager.loadAdsInterstitial(true);
+						}
+					}
+				}
 			}
 		});
 	}
