@@ -1,6 +1,6 @@
 {
-  "versionCode": 36,
-  "versionName": "1.2.3",
-  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=36",
-  "changelog": "• Agregada actualización automática OTA desde GitHub.\n• Añadido menú de búsqueda manual de actualizaciones.\n• Soporte para rutas personalizadas en archivos de configuración."
+  "versionCode": 40,
+  "versionName": "2.0.0",
+  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=40",
+  "changelog": "• Nueva versión 2.0 con laberinto de ofuscación de configuraciones.\n• Agregada actualización automática OTA desde GitHub.\n• Añadido menú de búsqueda manual de actualizaciones."
 }
