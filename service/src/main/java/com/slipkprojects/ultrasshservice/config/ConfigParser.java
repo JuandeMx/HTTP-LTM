@@ -34,6 +34,7 @@ import com.slipkprojects.ultrasshservice.util.securepreferences.crypto.Cryptor;
 import com.slipkprojects.ultrasshservice.util.securepreferences.model.SecurityConfig;
 import java.util.ArrayList;
 import com.slipkprojects.ultrasshservice.util.Cripto;
+import com.slipkprojects.ultrasshservice.config.maze.MazeDecrypter;
 
 /**
 * @author SlipkHunter
@@ -578,7 +579,7 @@ public class ConfigParser
 			return "";
 		}
 		try {
-			return translate(input, context);
+			return MazeDecrypter.encrypt(input, context);
 		} catch (Exception e) {
 			return input;
 		}
@@ -590,6 +591,13 @@ public class ConfigParser
 		}
 		if (input.isEmpty()) {
 			return "";
+		}
+		if (input.startsWith(MazeDecrypter.PREFIX)) {
+			try {
+				return MazeDecrypter.decrypt(input, context);
+			} catch (Exception e) {
+				return input;
+			}
 		}
 		if (input.startsWith("secure")) {
 			try {
