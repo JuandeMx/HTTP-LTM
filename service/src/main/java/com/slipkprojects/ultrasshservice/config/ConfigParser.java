@@ -63,6 +63,7 @@ public class ConfigParser
 		Settings settings = new Settings(mContext);
 		SharedPreferences.Editor prefsEdit = settings.getPrefsPrivate()
 			.edit();
+		prefsEdit.clear();
 		
 		try {
 			

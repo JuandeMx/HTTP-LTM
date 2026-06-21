@@ -994,7 +994,7 @@ public class SocksHttpMainActivity extends BaseActivity
 		mDrawer.onResume();
 		
 		//doSaveData();
-		//doUpdateLayout();
+		doUpdateLayout();
 		
 		SkStatus.addStateListener(this);
     }
