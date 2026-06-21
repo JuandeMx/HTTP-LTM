@@ -82,6 +82,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdListener;
 import com.slipkprojects.sockshttp.activities.BaseActivity;
+import android.widget.FrameLayout;
 import com.slipkprojects.ultrasshservice.tunnel.TunnelUtils;
 import android.text.TextUtils;
 import com.slipkprojects.sockshttp.preference.LocaleHelper;
@@ -107,6 +108,7 @@ public class SocksHttpMainActivity extends BaseActivity
 	
 	private DrawerLog mDrawer;
 	private DrawerPanelMain mDrawerPanel;
+	private AdView adsBannerView;
 	
 	private Settings mConfig;
 	private Toolbar toolbar_main;
@@ -150,6 +152,28 @@ public class SocksHttpMainActivity extends BaseActivity
 		}
 
 		setContentView(R.layout.activity_main_drawer);
+
+		// AdView Initialization
+		FrameLayout adContainer = (FrameLayout) findViewById(R.id.adBannerMainContainer);
+		if (adContainer != null && TunnelUtils.isNetworkOnline(this)) {
+			adsBannerView = new AdView(this);
+			adsBannerView.setAdSize(com.google.android.gms.ads.AdSize.BANNER);
+			if (!BuildConfig.DEBUG) {
+				adsBannerView.setAdUnitId(SocksHttpApp.ADS_UNITID_BANNER_MAIN);
+			} else {
+				adsBannerView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+			}
+			adsBannerView.setAdListener(new AdListener() {
+				@Override
+				public void onAdLoaded() {
+					if (adsBannerView != null) {
+						adsBannerView.setVisibility(View.VISIBLE);
+					}
+				}
+			});
+			adContainer.addView(adsBannerView);
+			adsBannerView.loadAd(new AdRequest.Builder().build());
+		}
 		
 		toolbar_main = (Toolbar) findViewById(R.id.toolbar_main);
 		setSupportActionBar(toolbar_main);
@@ -995,6 +1019,10 @@ public class SocksHttpMainActivity extends BaseActivity
 		
 		//doSaveData();
 		doUpdateLayout();
+
+		if (adsBannerView != null) {
+			adsBannerView.resume();
+		}
 		
 		SkStatus.addStateListener(this);
     }
@@ -1005,6 +1033,10 @@ public class SocksHttpMainActivity extends BaseActivity
 		super.onPause();
 		
 		doSaveData();
+
+		if (adsBannerView != null) {
+			adsBannerView.pause();
+		}
 		
 		SkStatus.removeStateListener(this);
 	}
@@ -1015,6 +1047,10 @@ public class SocksHttpMainActivity extends BaseActivity
 		super.onDestroy();
 		
 		mDrawer.onDestroy();
+
+		if (adsBannerView != null) {
+			adsBannerView.destroy();
+		}
 
 		LocalBroadcastManager.getInstance(this)
 			.unregisterReceiver(mActivityReceiver);
