@@ -81,6 +81,11 @@ public class UpdateManager {
                     conn.setConnectTimeout(15000);
                     conn.setReadTimeout(15000);
                     conn.setInstanceFollowRedirects(true);
+                    conn.setUseCaches(false);
+                    conn.setDefaultUseCaches(false);
+                    conn.setRequestProperty("Cache-Control", "no-cache, no-store, must-revalidate");
+                    conn.setRequestProperty("Pragma", "no-cache");
+                    conn.setRequestProperty("Expires", "0");
                     
                     int status = conn.getResponseCode();
                     int redirectCount = 0;
@@ -236,6 +241,11 @@ public class UpdateManager {
                     conn.setConnectTimeout(30000);
                     conn.setReadTimeout(30000);
                     conn.setInstanceFollowRedirects(true);
+                    conn.setUseCaches(false);
+                    conn.setDefaultUseCaches(false);
+                    conn.setRequestProperty("Cache-Control", "no-cache, no-store, must-revalidate");
+                    conn.setRequestProperty("Pragma", "no-cache");
+                    conn.setRequestProperty("Expires", "0");
 
                     int status = conn.getResponseCode();
                     int redirectCount = 0;
