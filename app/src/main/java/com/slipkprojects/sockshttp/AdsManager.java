@@ -83,10 +83,7 @@ public class AdsManager
 				}
 				Log.e(TAG, "Interstitial ad failed to load: " + errorMsg);
 
-				// Show a short helper message to diagnose fill rate easily only after exhausting retries
-				if (mShowOnLoad && mRetryCount >= 3) {
-					Toast.makeText(mContext, "AdMob: " + errorMsg, Toast.LENGTH_SHORT).show();
-				}
+				// Silent retry without user-facing Toast
 
 				if (mShowOnLoad && mRetryCount < 3) {
 					mRetryCount++;
@@ -160,6 +157,7 @@ public class AdsManager
 		long time = 60*60*1;
 		if (mInterstitialAd != null) {
 			if (force || ((SystemClock.elapsedRealtime() - mPrefs.getLong("last_ads_time", 0)) / 1000) >= time) {
+
 				mInterstitialAd.loadAd(new AdRequest.Builder().build());
 				Log.d(TAG, "Cargando anuncio intersticial (force=" + force + ")..");
 			}

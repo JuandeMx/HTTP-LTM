@@ -56,6 +56,7 @@ public class UpdateManager {
             @Override
             public void run() {
                 try {
+                    Log.d(TAG, "Iniciando búsqueda de actualización...");
                     Settings config = new Settings(context);
                     String updateUrl = config.getPrefsPrivate().getString("update_url", DEFAULT_UPDATE_URL);
                     if (updateUrl.isEmpty()) {
@@ -67,6 +68,7 @@ public class UpdateManager {
                     } else {
                         updateUrl += "?t=" + System.currentTimeMillis();
                     }
+                    Log.d(TAG, "URL de consulta: " + updateUrl);
 
                     java.net.Proxy proxy = java.net.Proxy.NO_PROXY;
                     if (com.slipkprojects.ultrasshservice.logger.SkStatus.isTunnelActive()) {
@@ -74,7 +76,10 @@ public class UpdateManager {
                         try {
                             socksPort = Integer.parseInt(config.getPrivString(Settings.PORTA_LOCAL_KEY));
                         } catch (Exception e) {}
+                        Log.d(TAG, "VPN activa. Usando proxy SOCKS local en puerto: " + socksPort);
                         proxy = new java.net.Proxy(java.net.Proxy.Type.SOCKS, java.net.InetSocketAddress.createUnresolved("127.0.0.1", socksPort));
+                    } else {
+                        Log.d(TAG, "VPN inactiva. Usando conexión directa.");
                     }
 
                     HttpURLConnection conn = (HttpURLConnection) new URL(updateUrl).openConnection(proxy);
@@ -88,14 +93,18 @@ public class UpdateManager {
                     conn.setRequestProperty("Expires", "0");
                     
                     int status = conn.getResponseCode();
+                    Log.d(TAG, "Respuesta HTTP: " + status);
+                    
                     int redirectCount = 0;
                     while ((status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == 307 || status == 308) && redirectCount < 5) {
                         String newUrl = conn.getHeaderField("Location");
+                        Log.d(TAG, "Redirección detectada a: " + newUrl);
                         conn.disconnect();
                         conn = (HttpURLConnection) new URL(newUrl).openConnection(proxy);
                         conn.setConnectTimeout(15000);
                         conn.setReadTimeout(15000);
                         status = conn.getResponseCode();
+                        Log.d(TAG, "Respuesta HTTP redirección: " + status);
                         redirectCount++;
                     }
 
@@ -114,6 +123,8 @@ public class UpdateManager {
                     conn.disconnect();
 
                     String jsonStr = out.toString("UTF-8");
+                    Log.d(TAG, "JSON recibido: " + jsonStr);
+                    
                     JSONObject json = new JSONObject(jsonStr);
                     final int newVersionCode = json.getInt("versionCode");
                     final String newVersionName = json.getString("versionName");
@@ -122,6 +133,9 @@ public class UpdateManager {
 
                     PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
                     final int currentVersionCode = pInfo.versionCode;
+                    
+                    Log.d(TAG, "Versión actual del dispositivo: " + currentVersionCode + " (" + pInfo.versionName + ")");
+                    Log.d(TAG, "Versión detectada en servidor: " + newVersionCode + " (" + newVersionName + ")");
 
                     mainHandler.post(new Runnable() {
                         @Override
@@ -131,8 +145,10 @@ public class UpdateManager {
                             }
 
                             if (newVersionCode > currentVersionCode) {
+                                Log.d(TAG, "Nueva versión disponible (" + newVersionName + "). Mostrando diálogo...");
                                 showUpdateAvailableDialog(context, newVersionName, changelog, apkUrl);
                             } else {
+                                Log.d(TAG, "La aplicación ya está actualizada.");
                                 if (manual) {
                                     Toast.makeText(context, R.string.app_is_up_to_date, Toast.LENGTH_SHORT).show();
                                 }

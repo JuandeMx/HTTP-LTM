@@ -306,29 +306,6 @@ public class Tunnel
 					}
 				}
 				
-				if (!enabledFilter || filterBypassMode) {
-					
-					// Exclude Google Play Services to ensure AdMob loads ads via native connection (bypassing VPN)
-					try {
-						builder.addDisallowedApplication("com.google.android.gms");
-					} catch(PackageManager.NameNotFoundException e) {
-						mHostService.onDiagnosticMessage("Failed to exclude Google Play Services from VPN");
-					}
-
-					// Exclude Google Services Framework (GSF) to prevent geo-location mismatches with AdMob
-					try {
-						builder.addDisallowedApplication("com.google.android.gsf");
-					} catch(PackageManager.NameNotFoundException e) {
-						mHostService.onDiagnosticMessage("Failed to exclude Google Services Framework from VPN");
-					}
-
-					// Exclude Google Play Store to align device licensing and ads services
-					try {
-						builder.addDisallowedApplication("com.android.vending");
-					} catch(PackageManager.NameNotFoundException e) {
-						mHostService.onDiagnosticMessage("Failed to exclude Google Play Store from VPN");
-					}
-				}
 			}
 			
 			// TunFd retry loop (Android workaround)
