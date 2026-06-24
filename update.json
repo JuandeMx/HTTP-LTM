@@ -1,6 +1,6 @@
 {
-  "versionCode": 43,
-  "versionName": "2.3",
-  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=43",
-  "changelog": "• Versión 2.3 con correcciones de conectividad interna bajo red de datos móviles.\n• Carga inmediata de anuncios AdMob optimizada."
+  "versionCode": 44,
+  "versionName": "2.4",
+  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=44",
+  "changelog": "• v2.4: Corrección de IDs de anuncios Banner.\n• Anuncios Banner y Intersticial con IDs correctos de AdMob."
 }
