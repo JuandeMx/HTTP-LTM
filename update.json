@@ -1,6 +1,6 @@
 {
-  "versionCode": 41,
-  "versionName": "2.1",
-  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=41",
-  "changelog": "• Versión 2.1 con solución a la persistencia y actualización del estado de bloqueo de configuraciones.\n• Nueva versión con laberinto de ofuscación de archivos de configuración."
+  "versionCode": 42,
+  "versionName": "2.2",
+  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=42",
+  "changelog": "• Versión 2.2 con carga y visualización inmediata de anuncios.\n• Estabilización de enrutamiento DNS y compatibilidad total con datos móviles."
 }
