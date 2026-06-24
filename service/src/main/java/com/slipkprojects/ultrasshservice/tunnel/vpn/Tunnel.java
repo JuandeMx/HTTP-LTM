@@ -306,13 +306,7 @@ public class Tunnel
 					}
 				}
 				
-				// Exclude the app itself to avoid routing loops with local proxy (ShareNet)
 				if (!enabledFilter || filterBypassMode) {
-					try {
-						builder.addDisallowedApplication(mHostService.getContext().getPackageName());
-					} catch(PackageManager.NameNotFoundException e) {
-						mHostService.onDiagnosticMessage("Failed to exclude own app from VPN");
-					}
 					
 					// Exclude Google Play Services to ensure AdMob loads ads via native connection (bypassing VPN)
 					try {
