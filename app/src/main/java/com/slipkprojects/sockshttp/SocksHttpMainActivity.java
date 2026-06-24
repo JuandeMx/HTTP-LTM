@@ -200,6 +200,7 @@ public class SocksHttpMainActivity extends BaseActivity
 
 		// Initialize AdsManager for Interstitial ads
 		adsManager = AdsManager.newInstance(this);
+		adsManager.loadAdsInterstitial(true);
 		
 		toolbar_main = (Toolbar) findViewById(R.id.toolbar_main);
 		setSupportActionBar(toolbar_main);
@@ -268,7 +269,7 @@ public class SocksHttpMainActivity extends BaseActivity
 						Settings.setDefaultConfig(this);
 						Settings.clearSettings(this);
 
-						Toast.makeText(this, "As configurações foram limpas para evitar bugs",
+						Toast.makeText(this, "Las configuraciones fueron limpiadas para evitar errores",
 							Toast.LENGTH_LONG).show();
 					}
 				}
@@ -424,6 +425,14 @@ public class SocksHttpMainActivity extends BaseActivity
 				v.vibrate(50);
 			}
 			com.slipkprojects.sockshttp.util.UpdateManager.checkUpdate(SocksHttpMainActivity.this, false);
+			
+			// Show the interstitial ad right after connection state is updated in the UI
+			if (adsManager != null) {
+				Log.d(TAG, "UI updated to Connected. Showing interstitial ad...");
+				adsManager.showAdsInterstitial();
+			}
+		} else if (!isRunning && adsManager != null) {
+			adsManager.cancelShowOnLoad();
 		}
 		mPreviousState = currentState;
 
@@ -883,14 +892,6 @@ public class SocksHttpMainActivity extends BaseActivity
 			@Override
 			public void run() {
 				doUpdateLayout();
-				if (level == ConnectionStatus.LEVEL_CONNECTED) {
-					if (TunnelUtils.isNetworkOnline(SocksHttpMainActivity.this)) {
-						if (adsManager != null) {
-							Log.d(TAG, "Server connected and online. Loading interstitial ad...");
-							adsManager.loadAdsInterstitial(true);
-						}
-					}
-				}
 			}
 		});
 	}
