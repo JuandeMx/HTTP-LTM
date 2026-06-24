@@ -238,15 +238,7 @@ public class Tunnel
 				}
 			}
 			
-			// Add public DNS fallbacks for disallowed applications (like AdMob) to resolve via physical network interface
-			try {
-				builder.addDnsServer("8.8.8.8");
-				builder.addDnsServer("1.1.1.1");
-				mRoutes.addIP(new CIDRIP("8.8.8.8", 32), false);
-				mRoutes.addIP(new CIDRIP("1.1.1.1", 32), false);
-			} catch (Exception e) {
-				mHostService.onDiagnosticMessage("Failed to add public fallback DNS: " + e.getMessage());
-			}
+
 			
 			// set MTU
 			String release = Build.VERSION.RELEASE;

@@ -83,8 +83,8 @@ public class AdsManager
 				}
 				Log.e(TAG, "Interstitial ad failed to load: " + errorMsg);
 
-				// Show a short helper message to diagnose fill rate easily
-				if (mShowOnLoad) {
+				// Show a short helper message to diagnose fill rate easily only after exhausting retries
+				if (mShowOnLoad && mRetryCount >= 3) {
 					Toast.makeText(mContext, "AdMob: " + errorMsg, Toast.LENGTH_SHORT).show();
 				}
 
