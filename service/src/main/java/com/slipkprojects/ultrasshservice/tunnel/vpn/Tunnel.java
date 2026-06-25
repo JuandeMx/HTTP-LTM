@@ -204,7 +204,8 @@ public class Tunnel
 			}
 			
 			boolean isHysteria = new com.slipkprojects.ultrasshservice.config.Settings(mHostService.getContext()).getVpnUdpForward();
-			if (!isHysteria) {
+			boolean isV2ray = new com.slipkprojects.ultrasshservice.config.Settings(mHostService.getContext()).getPrefsPrivate().getBoolean("use_v2ray", false);
+			if (!isHysteria && !isV2ray) {
 				try {
 					builder.addAddress("fd00:1:2:3:4:5:6:1", 64);
 					builder.addRoute("::", 0);

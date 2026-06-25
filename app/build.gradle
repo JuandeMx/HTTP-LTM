@@ -8,8 +8,8 @@ android {
         applicationId "com.httpltm.app"
 		minSdkVersion 21
         targetSdkVersion 34
-        versionCode 44
-        versionName "2.4"
+        versionCode 45
+        versionName "2.5"
 		multiDexEnabled true
     }
     compileOptions {
