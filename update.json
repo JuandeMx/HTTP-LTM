@@ -1,6 +1,6 @@
 {
-  "versionCode": 45,
-  "versionName": "2.5",
-  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=45",
-  "changelog": "• v2.5: Corrección de internet en V2Ray (exclusión de servidor en VPN y bypass de IPv6)."
+  "versionCode": 46,
+  "versionName": "2.1",
+  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=46",
+  "changelog": "• Reversión a la versión estable 2.1 para mejorar la estabilidad y resolver problemas de conexión."
 }

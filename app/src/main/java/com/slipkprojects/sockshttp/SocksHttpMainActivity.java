@@ -82,7 +82,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdListener;
 import com.slipkprojects.sockshttp.activities.BaseActivity;
-import android.widget.FrameLayout;
 import com.slipkprojects.ultrasshservice.tunnel.TunnelUtils;
 import android.text.TextUtils;
 import com.slipkprojects.sockshttp.preference.LocaleHelper;
@@ -108,8 +107,6 @@ public class SocksHttpMainActivity extends BaseActivity
 	
 	private DrawerLog mDrawer;
 	private DrawerPanelMain mDrawerPanel;
-	private AdView adsBannerView;
-	private AdsManager adsManager;
 	
 	private Settings mConfig;
 	private Toolbar toolbar_main;
@@ -153,54 +150,6 @@ public class SocksHttpMainActivity extends BaseActivity
 		}
 
 		setContentView(R.layout.activity_main_drawer);
-
-		// AdView Initialization
-		FrameLayout adContainer = (FrameLayout) findViewById(R.id.adBannerMainContainer);
-		if (adContainer != null) {
-			Log.d(TAG, "Initializing AdMob Banner View...");
-			adsBannerView = new AdView(this);
-			adsBannerView.setAdSize(com.google.android.gms.ads.AdSize.BANNER);
-			if (!BuildConfig.DEBUG) {
-				adsBannerView.setAdUnitId(SocksHttpApp.ADS_UNITID_BANNER_MAIN);
-			} else {
-				adsBannerView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-			}
-			adsBannerView.setAdListener(new AdListener() {
-				@Override
-				public void onAdLoaded() {
-					Log.d(TAG, "AdMob Banner loaded successfully.");
-					if (adsBannerView != null) {
-						adsBannerView.setVisibility(View.VISIBLE);
-					}
-				}
-
-				@Override
-				public void onAdFailedToLoad(int errorCode) {
-					Log.e(TAG, "AdMob Banner failed to load with error code: " + errorCode);
-				}
-
-				@Override
-				public void onAdOpened() {
-					Log.d(TAG, "AdMob Banner opened.");
-				}
-
-				@Override
-				public void onAdLeftApplication() {
-					Log.d(TAG, "AdMob Banner left application.");
-				}
-
-				@Override
-				public void onAdClosed() {
-					Log.d(TAG, "AdMob Banner closed.");
-				}
-			});
-			adContainer.addView(adsBannerView);
-			adsBannerView.loadAd(new AdRequest.Builder().build());
-		}
-
-		// Initialize AdsManager for Interstitial ads
-		adsManager = AdsManager.newInstance(this);
-		adsManager.loadAdsInterstitial(true);
 		
 		toolbar_main = (Toolbar) findViewById(R.id.toolbar_main);
 		setSupportActionBar(toolbar_main);
@@ -269,7 +218,7 @@ public class SocksHttpMainActivity extends BaseActivity
 						Settings.setDefaultConfig(this);
 						Settings.clearSettings(this);
 
-						Toast.makeText(this, "Las configuraciones fueron limpiadas para evitar errores",
+						Toast.makeText(this, "As configurações foram limpas para evitar bugs",
 							Toast.LENGTH_LONG).show();
 					}
 				}
@@ -382,49 +331,12 @@ public class SocksHttpMainActivity extends BaseActivity
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
-							String serverHost = getServerAddress();
-							int serverPort = getServerPort();
-							
 							long startTime = System.currentTimeMillis();
 							int finalPing = -1;
-							
-							if (serverHost != null && !serverHost.isEmpty()) {
-								try (java.net.Socket socket = new java.net.Socket()) {
-									socket.connect(new java.net.InetSocketAddress(serverHost, serverPort), 4000);
-									finalPing = (int) (System.currentTimeMillis() - startTime);
-								} catch (Exception e) {
-									// Fallback: try http request through VPN tunnel
-									try {
-										long httpStart = System.currentTimeMillis();
-										java.net.URL url = new java.net.URL("http://connectivitycheck.gstatic.com/generate_204");
-										java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-										conn.setConnectTimeout(3000);
-										conn.setReadTimeout(3000);
-										conn.setRequestMethod("GET");
-										conn.connect();
-										int responseCode = conn.getResponseCode();
-										if (responseCode == 204 || responseCode == 200) {
-											finalPing = (int) (System.currentTimeMillis() - httpStart);
-										}
-										conn.disconnect();
-									} catch (Exception ex) {}
-								}
-							} else {
-								try {
-									long httpStart = System.currentTimeMillis();
-									java.net.URL url = new java.net.URL("http://connectivitycheck.gstatic.com/generate_204");
-									java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-									conn.setConnectTimeout(3000);
-									conn.setReadTimeout(3000);
-									conn.setRequestMethod("GET");
-									conn.connect();
-									int responseCode = conn.getResponseCode();
-									if (responseCode == 204 || responseCode == 200) {
-										finalPing = (int) (System.currentTimeMillis() - httpStart);
-									}
-									conn.disconnect();
-								} catch (Exception ex) {}
-							}
+							try (java.net.Socket socket = new java.net.Socket()) {
+								socket.connect(new java.net.InetSocketAddress("1.1.1.1", 80), 5000);
+								finalPing = (int) (System.currentTimeMillis() - startTime);
+							} catch (Exception e) {}
 							
 							final int pingResult = finalPing;
 							if (pingText != null) {
@@ -447,128 +359,6 @@ public class SocksHttpMainActivity extends BaseActivity
 		};
 		speedHandler.postDelayed(speedRunnable, 1000);
 	}
-
-	private String getServerAddress() {
-		SharedPreferences prefs = mConfig.getPrefsPrivate();
-		String serverIP = mConfig.getPrivString(Settings.SERVIDOR_KEY);
-		
-		if (mConfig.getVpnUdpForward()) {
-			serverIP = prefs.getString("hysteria_host", "");
-		} else if (prefs.getBoolean("use_v2ray", false)) {
-			serverIP = mConfig.getPrivString(Settings.SERVIDOR_KEY); // fallback
-			String vConfig = prefs.getString("v2ray_config", "");
-			if (!vConfig.isEmpty()) {
-				try {
-					org.json.JSONObject json = new org.json.JSONObject(vConfig);
-					org.json.JSONArray outbounds = json.optJSONArray("outbounds");
-					if (outbounds != null) {
-						for (int i = 0; i < outbounds.length(); i++) {
-							org.json.JSONObject outbound = outbounds.optJSONObject(i);
-							if (outbound != null) {
-								org.json.JSONObject settingsObj = outbound.optJSONObject("settings");
-								if (settingsObj != null) {
-									// Try vnext (vmess / vless)
-									org.json.JSONArray vnext = settingsObj.optJSONArray("vnext");
-									if (vnext != null && vnext.length() > 0) {
-										org.json.JSONObject serverObj = vnext.optJSONObject(0);
-										if (serverObj != null) {
-											String addr = serverObj.optString("address", "");
-											if (!addr.isEmpty()) {
-												serverIP = addr;
-												break;
-											}
-										}
-									}
-									// Try servers (trojan / shadowsocks)
-									org.json.JSONArray servers = settingsObj.optJSONArray("servers");
-									if (servers != null && servers.length() > 0) {
-										org.json.JSONObject serverObj = servers.optJSONObject(0);
-										if (serverObj != null) {
-											String addr = serverObj.optString("address", "");
-											if (!addr.isEmpty()) {
-												serverIP = addr;
-												break;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				} catch (Exception e) {}
-			}
-		}
-		
-		if (serverIP != null && serverIP.contains(":")) {
-			try {
-				serverIP = serverIP.split(":")[0];
-			} catch (Exception e) {}
-		}
-		
-		return serverIP;
-	}
-
-	private int getServerPort() {
-		SharedPreferences prefs = mConfig.getPrefsPrivate();
-		int port = 80;
-		
-		if (mConfig.getVpnUdpForward()) {
-			String pStr = prefs.getString("hysteria_port", "36712");
-			try {
-				port = Integer.parseInt(pStr);
-			} catch (Exception e) {}
-		} else if (prefs.getBoolean("use_v2ray", false)) {
-			String vConfig = prefs.getString("v2ray_config", "");
-			if (!vConfig.isEmpty()) {
-				try {
-					org.json.JSONObject json = new org.json.JSONObject(vConfig);
-					org.json.JSONArray outbounds = json.optJSONArray("outbounds");
-					if (outbounds != null) {
-						for (int i = 0; i < outbounds.length(); i++) {
-							org.json.JSONObject outbound = outbounds.optJSONObject(i);
-							if (outbound != null) {
-								org.json.JSONObject settingsObj = outbound.optJSONObject("settings");
-								if (settingsObj != null) {
-									// Try vnext (vmess / vless)
-									org.json.JSONArray vnext = settingsObj.optJSONArray("vnext");
-									if (vnext != null && vnext.length() > 0) {
-										org.json.JSONObject serverObj = vnext.optJSONObject(0);
-										if (serverObj != null) {
-											int p = serverObj.optInt("port", 0);
-											if (p > 0) {
-												port = p;
-												break;
-											}
-										}
-									}
-									// Try servers (trojan / shadowsocks)
-									org.json.JSONArray servers = settingsObj.optJSONArray("servers");
-									if (servers != null && servers.length() > 0) {
-										org.json.JSONObject serverObj = servers.optJSONObject(0);
-										if (serverObj != null) {
-											int p = serverObj.optInt("port", 0);
-											if (p > 0) {
-												port = p;
-												break;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				} catch (Exception e) {}
-			}
-		} else {
-			String pStr = mConfig.getPrivString(Settings.SERVIDOR_PORTA_KEY);
-			try {
-				port = Integer.parseInt(pStr);
-			} catch (Exception e) {}
-		}
-		
-		return port;
-	}
-
 	
 	private void doUpdateLayout() {
 		SharedPreferences prefs = mConfig.getPrefsPrivate();
@@ -584,14 +374,6 @@ public class SocksHttpMainActivity extends BaseActivity
 				v.vibrate(50);
 			}
 			com.slipkprojects.sockshttp.util.UpdateManager.checkUpdate(SocksHttpMainActivity.this, false);
-			
-			// Show the interstitial ad right after connection state is updated in the UI
-			if (adsManager != null) {
-				Log.d(TAG, "UI updated to Connected. Showing interstitial ad...");
-				adsManager.showAdsInterstitial();
-			}
-		} else if (!isRunning && adsManager != null) {
-			adsManager.cancelShowOnLoad();
 		}
 		mPreviousState = currentState;
 
@@ -1213,10 +995,6 @@ public class SocksHttpMainActivity extends BaseActivity
 		
 		//doSaveData();
 		doUpdateLayout();
-
-		if (adsBannerView != null) {
-			adsBannerView.resume();
-		}
 		
 		SkStatus.addStateListener(this);
     }
@@ -1227,10 +1005,6 @@ public class SocksHttpMainActivity extends BaseActivity
 		super.onPause();
 		
 		doSaveData();
-
-		if (adsBannerView != null) {
-			adsBannerView.pause();
-		}
 		
 		SkStatus.removeStateListener(this);
 	}
@@ -1241,10 +1015,6 @@ public class SocksHttpMainActivity extends BaseActivity
 		super.onDestroy();
 		
 		mDrawer.onDestroy();
-
-		if (adsBannerView != null) {
-			adsBannerView.destroy();
-		}
 
 		LocalBroadcastManager.getInstance(this)
 			.unregisterReceiver(mActivityReceiver);
