@@ -1,5 +1,5 @@
 {
-  "versionCode": 46,
+  "versionCode": 45,
   "versionName": "2.1",
   "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=46",
   "changelog": "• Reversión a la versión estable 2.1 para mejorar la estabilidad y resolver problemas de conexión."
