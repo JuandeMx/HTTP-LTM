@@ -308,12 +308,15 @@ public class SocksHttpMainActivity extends BaseActivity
 		lastRxBytes = TrafficStats.getTotalRxBytes();
 		lastTxBytes = TrafficStats.getTotalTxBytes();
 		speedRunnable = new Runnable() {
+			private int pingTick = 0;
+
 			@Override
 			public void run() {
 				if (!SkStatus.SSH_CONECTADO.equals(SkStatus.getLastState())) {
 					if (uploadText != null) uploadText.setText("0.00 Mbps");
 					if (downloadText != null) downloadText.setText("0.00 Mbps");
 					if (pingText != null) pingText.setText("0 ms");
+					pingTick = 0;
 				} else {
 					long rxBytes = TrafficStats.getTotalRxBytes();
 					long txBytes = TrafficStats.getTotalTxBytes();
@@ -328,31 +331,48 @@ public class SocksHttpMainActivity extends BaseActivity
 					if (uploadText != null) uploadText.setText(String.format("%.2f Mbps", txMbps));
 					if (downloadText != null) downloadText.setText(String.format("%.2f Mbps", rxMbps));
 					
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							long startTime = System.currentTimeMillis();
-							int finalPing = -1;
-							try (java.net.Socket socket = new java.net.Socket()) {
-								socket.connect(new java.net.InetSocketAddress("1.1.1.1", 80), 5000);
-								finalPing = (int) (System.currentTimeMillis() - startTime);
-							} catch (Exception e) {}
-							
-							final int pingResult = finalPing;
-							if (pingText != null) {
-								pingText.post(new Runnable() {
-									@Override
-									public void run() {
-										if (pingResult >= 0) {
-											pingText.setText(pingResult + " ms");
-										} else {
-											pingText.setText("—");
+					pingTick++;
+					if (pingTick >= 10 || pingTick == 1) {
+						if (pingTick >= 10) pingTick = 0;
+
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								long startTime = System.currentTimeMillis();
+								int finalPing = -1;
+								java.net.HttpURLConnection conn = null;
+								try {
+									java.net.URL url = new java.net.URL("https://clients3.google.com/generate_204");
+									conn = (java.net.HttpURLConnection) url.openConnection();
+									conn.setRequestMethod("GET");
+									conn.setConnectTimeout(10000);
+									conn.setReadTimeout(10000);
+									conn.setUseCaches(false);
+									conn.setInstanceFollowRedirects(false);
+									conn.connect();
+									conn.getResponseCode();
+									finalPing = (int) (System.currentTimeMillis() - startTime);
+								} catch (Exception e) {}
+								finally {
+									if (conn != null) conn.disconnect();
+								}
+								
+								final int pingResult = finalPing;
+								if (pingText != null) {
+									pingText.post(new Runnable() {
+										@Override
+										public void run() {
+											if (pingResult >= 0) {
+												pingText.setText(pingResult + " ms");
+											} else {
+												pingText.setText("—");
+											}
 										}
-									}
-								});
+									});
+								}
 							}
-						}
-					}).start();
+						}).start();
+					}
 				}
 				speedHandler.postDelayed(this, 1000);
 			}
