@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Arquivo de Configuração</comment>
+<entry key="sshPortaLocal">1080</entry>
+<entry key="use_v2ray">0</entry>
+<entry key="file.validade">0</entry>
+<entry key="file.hideServerMessage">1</entry>
+<entry key="dnsForward">1</entry>
+<entry key="file.pedirLogin">0</entry>
+<entry key="use_slowdns">0</entry>
+<entry key="udpResolver">127.0.0.1:7300</entry>
+<entry key="file.appVersionCode">24</entry>
+<entry key="bloquearRoot">1</entry>
+<entry key="file.msg">&lt;h1&gt;&lt;font color="white"&gt;¡J.G.S ACTIVO¡💀🔥
+se agradece la captura 😉&lt;/font&gt;</entry>
+<entry key="sshPort">80</entry>
+<entry key="proxyRemoto"/>
+<entry key="use_psiphon">0</entry>
+<entry key="use_ssl">0</entry>
+<entry key="proxyRemotoPorta"/>
+<entry key="dnsResolver">1.1.1.1</entry>
+<entry key="unified_input">emailmarketing.personal.com.ar:80@speedhv53y:ocj0cf11Ea3T</entry>
+<entry key="udpForward">0</entry>
+<entry key="file.proteger">1</entry>
+<entry key="sshPass">ocj0cf11Ea3T</entry>
+<entry key="usarDefaultPayload">1</entry>
+<entry key="tunnelType">1</entry>
+<entry key="customSNI"/>
+<entry key="ssh_hwid">0</entry>
+<entry key="sshUser">speedhv53y</entry>
+<entry key="use_payload">1</entry>
+<entry key="use_enhanced">0</entry>
+<entry key="proxyPayload">COPY /t.me/nozetaoficial1 HTTP/1.1[crlf]Host: www.personal.com.ar[crlf][lf][crlf][split]
+X / HTTP/1.2[crlf]Host: www.personal.com.ar[crlf][lf][crlf]GET /.rar HTTP/1.1[crlf]Host: br.clickhost.xyz[crlf]Upgrade: websocket[crlf]Connection: Upgrade[crlf][crlf]</entry>
+<entry key="sshServer">emailmarketing.personal.com.ar</entry>
+</properties>

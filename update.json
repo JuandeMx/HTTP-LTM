@@ -1,6 +1,6 @@
 {
-  "versionCode": 47,
-  "versionName": "2.1",
-  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=47",
-  "changelog": "• v2.1-stable: Solución de bucle de reconexión y desconexión en redes móviles."
+  "versionCode": 48,
+  "versionName": "3.0",
+  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/HTTP-LTM/main/app-release.apk?v=48",
+  "changelog": "• v3.0 MAXIMUS CUSTOM: Renombrado oficial de la aplicación y soporte exclusivo para archivos de configuración .MX."
 }

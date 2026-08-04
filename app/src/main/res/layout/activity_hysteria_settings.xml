@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryBackground">
+
+    <include
+        layout="@layout/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- SECCION: Hysteria Info -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hysteria"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Versión\n2"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#2C323F"
+                android:layout_marginBottom="16dp" />
+
+            <!-- SECCION: Servidor -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Servidor"
+                android:textColor="@color/colorAccent"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Host"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editHysteriaHost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ej. 192.168.1.1 o server.com"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="@color/colorAccent"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Puerto del servidor"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editHysteriaPort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ej. 443 o 2000-5000"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="@color/colorAccent"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Protocolo"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="UDP"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#2C323F"
+                android:layout_marginBottom="16dp" />
+
+            <!-- SECCION: Authentication -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Authentication"
+                android:textColor="@color/colorAccent"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Authentication Password"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editHysteriaAuth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Contraseña de autenticación"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="@color/colorAccent"
+                android:inputType="textPassword"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Obfuscation Password"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editHysteriaObfs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Opcional (Ej. salamander)"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="@color/colorAccent"
+                android:inputType="textPassword"
+                android:layout_marginBottom="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#2C323F"
+                android:layout_marginBottom="16dp" />
+
+            <!-- SECCION: Transport Layer Encryption -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Transport Layer Encryption"
+                android:textColor="@color/colorAccent"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Indicación del Nombre del Servidor (SNI)"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editHysteriaSni"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Opcional (Ej. www.google.com)"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="@color/colorAccent"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Application-Layer Protocol Negotiation (ALPN)"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editHysteriaAlpn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Opcional (Ej. h3)"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="@color/colorAccent"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Permitir inseguro"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Allows insecure connection at TLS client, e.g., TLS server uses unverifiable certificates"
+                        android:textColor="@color/textColorSecondary"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switchHysteriaInsecure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/ToolbarTheme" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Certificados"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/txtHysteriaCert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#2C323F"
+                android:layout_marginBottom="16dp" />
+
+            <!-- SECCION: Conexión -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Conexión"
+                android:textColor="@color/colorAccent"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Port Hopping Interval (second)"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editHysteriaHopping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ej. 10"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="@color/colorAccent"
+                android:inputType="number"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Max Upload Speed (Mbps)"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editHysteriaUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ej. 50"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="@color/colorAccent"
+                android:inputType="number"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Max Download Speed (Mbps)"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/editHysteriaDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ej. 100"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="#4DFFFFFF"
+                android:backgroundTint="@color/colorAccent"
+                android:inputType="number"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="QUIC Receive Window Size"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/txtHysteriaQuicWindowValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="8"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginRight="8dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Initial QUIC receive window size (in Megabytes, MB). Don't change these values unless you understand what you're doing."
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="11sp"
+                    android:layout_marginBottom="8dp" />
+
+                <SeekBar
+                    android:id="@+id/seekbarHysteriaQuicWindow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="128"
+                    android:progress="8"
+                    android:theme="@style/ToolbarTheme" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Disable Path MTU Discovery (RFC 8899)"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switchHysteriaDisableMtu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/ToolbarTheme" />
+            </LinearLayout>
+
+            <!-- Boton de Guardar -->
+            <Button
+                android:id="@+id/btnSaveHysteriaSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Guardar"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/colorAccent"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

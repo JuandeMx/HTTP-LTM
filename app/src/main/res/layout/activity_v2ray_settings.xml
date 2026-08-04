@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryBackground">
+
+    <include
+        layout="@layout/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- VISTA 1: Editor JSON (Con Números de Línea) -->
+        <LinearLayout
+            android:id="@+id/layout_json_editor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="#121212"
+            android:visibility="visible">
+
+            <!-- Números de línea -->
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scrollbars="none"
+                android:background="#1A1A1A">
+                <TextView
+                    android:id="@+id/txtLineNumbers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="1"
+                    android:textColor="#555555"
+                    android:textSize="14sp"
+                    android:typeface="monospace"
+                    android:gravity="end" />
+            </ScrollView>
+
+            <!-- Campo de edición de texto JSON -->
+            <ScrollView
+                android:id="@+id/scroll_json_text"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fillViewport="true">
+                <EditText
+                    android:id="@+id/editV2rayJson"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#4DFFFFFF"
+                    android:background="@null"
+                    android:gravity="top|start"
+                    android:textSize="14sp"
+                    android:typeface="monospace"
+                    android:inputType="textMultiLine|textNoSuggestions"
+                    android:scrollHorizontally="false" />
+            </ScrollView>
+        </LinearLayout>
+
+        <!-- VISTA 2: Formulario Visual -->
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scroll_visual_form"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Protocol Selection -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Protocolo / Protocol:"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="8dp" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroupProtocol"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+                    
+                    <android.support.v7.widget.AppCompatRadioButton
+                        android:id="@+id/radioVmess"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="VMess"
+                        android:textColor="@color/textColorPrimary"
+                        android:theme="@style/ToolbarTheme"
+                        android:layout_marginRight="24dp" />
+
+                    <android.support.v7.widget.AppCompatRadioButton
+                        android:id="@+id/radioVless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="VLESS"
+                        android:textColor="@color/textColorPrimary"
+                        android:theme="@style/ToolbarTheme" />
+                </RadioGroup>
+
+                <!-- V2Ray Outbound Settings -->
+                <TextView
+                    android:id="@+id/txtOutboundHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="V2Ray Settings:"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#2C323F"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Server address:"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="13sp" />
+
+                <EditText
+                    android:id="@+id/editV2rayHost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="IP or domain address"
+                    android:textColor="@color/textColorPrimary"
+                    android:textColorHint="#4DFFFFFF"
+                    android:backgroundTint="@color/colorAccent"
+                    android:inputType="text"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Server Port:"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="13sp" />
+
+                <EditText
+                    android:id="@+id/editV2rayPort"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Server port number"
+                    android:textColor="@color/textColorPrimary"
+                    android:textColorHint="#4DFFFFFF"
+                    android:backgroundTint="@color/colorAccent"
+                    android:inputType="number"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ID:"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="13sp" />
+
+                <EditText
+                    android:id="@+id/editV2rayId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Vmess user"
+                    android:textColor="@color/textColorPrimary"
+                    android:textColorHint="#4DFFFFFF"
+                    android:backgroundTint="@color/colorAccent"
+                    android:inputType="text"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Mux Switch -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="24dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Mux"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="14sp" />
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/switchV2rayMux"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/ToolbarTheme" />
+                </LinearLayout>
+
+                <!-- Stream Settings -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Stream Settings (Red / TLS):"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#2C323F"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Network selection -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tipo de Red / Network Type:"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="8dp" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroupNetwork"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+                    
+                    <android.support.v7.widget.AppCompatRadioButton
+                        android:id="@+id/radioNetworkTcp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TCP"
+                        android:textColor="@color/textColorPrimary"
+                        android:theme="@style/ToolbarTheme"
+                        android:layout_marginRight="24dp" />
+
+                    <android.support.v7.widget.AppCompatRadioButton
+                        android:id="@+id/radioNetworkWs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WebSocket (WS)"
+                        android:textColor="@color/textColorPrimary"
+                        android:theme="@style/ToolbarTheme" />
+                </RadioGroup>
+
+                <!-- WS Settings Group (Visible only if WS is selected) -->
+                <LinearLayout
+                    android:id="@+id/layoutWsSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp">
+                    
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="WebSocket Host:"
+                        android:textColor="@color/textColorSecondary"
+                        android:textSize="13sp" />
+
+                    <EditText
+                        android:id="@+id/editV2rayWsHost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Host header (e.g. host.com)"
+                        android:textColor="@color/textColorPrimary"
+                        android:textColorHint="#4DFFFFFF"
+                        android:backgroundTint="@color/colorAccent"
+                        android:inputType="text"
+                        android:layout_marginBottom="16dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="WebSocket Path:"
+                        android:textColor="@color/textColorSecondary"
+                        android:textSize="13sp" />
+
+                    <EditText
+                        android:id="@+id/editV2rayWsPath"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Path (e.g. /path)"
+                        android:textColor="@color/textColorPrimary"
+                        android:textColorHint="#4DFFFFFF"
+                        android:backgroundTint="@color/colorAccent"
+                        android:inputType="text"
+                        android:layout_marginBottom="16dp" />
+                </LinearLayout>
+
+                <!-- TLS Switch -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="TLS"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="14sp" />
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:id="@+id/switchV2rayTls"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/ToolbarTheme" />
+                </LinearLayout>
+
+                <!-- SNI Group (Visible only if TLS is active) -->
+                <LinearLayout
+                    android:id="@+id/layoutSniSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp">
+                    
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SNI (Server Name Indication):"
+                        android:textColor="@color/textColorSecondary"
+                        android:textSize="13sp" />
+
+                    <EditText
+                        android:id="@+id/editV2raySni"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Server Name Indication / SNI"
+                        android:textColor="@color/textColorPrimary"
+                        android:textColorHint="#4DFFFFFF"
+                        android:backgroundTint="@color/colorAccent"
+                        android:inputType="text" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </FrameLayout>
+
+    <!-- Botón de Guardar común en la parte inferior -->
+    <Button
+        android:id="@+id/btnSaveV2raySettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Guardar"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
+        android:textAllCaps="false" />
+
+</LinearLayout>

@@ -44,7 +44,7 @@ public class ConfigParser
 	private static final String TAG = ConfigParser.class.getSimpleName();
 	public static final String CONVERTED_PROFILE = "converted Profile";
 	
-	public static final String FILE_EXTENSAO = "LT";
+	public static final String FILE_EXTENSAO = "MX";
 	
 	// Legacy key removed to prevent sniffer fallback
 	

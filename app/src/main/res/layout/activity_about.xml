@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<include
+		layout="@layout/toolbar_main"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"/>
+
+	<ScrollView
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="@color/colorSecondaryBackground"
+			android:paddingLeft="15dp"
+			android:paddingRight="15dp">
+
+			<TextView
+				android:text="DE MEXICO HASTA ARGENTINA\nBY FREE LATAM TEAM 🇲🇽 🇦🇷"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:textSize="20sp"
+				android:paddingTop="30dp"
+				android:textStyle="bold"
+				android:textColor="#386BDD"/>
+
+			<com.google.android.gms.ads.AdView
+				xmlns:ads="http://schemas.android.com/apk/res-auto"
+				android:id="@+id/adBannerSecondView"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_alignParentBottom="true"
+				ads:adSize="BANNER"
+				ads:adUnitId="ca-app-pub-1394597352583742/3270230978"
+				android:layout_gravity="center"
+				android:layout_centerHorizontal="true"
+				android:layout_marginTop="50dp">
+
+			</com.google.android.gms.ads.AdView>
+
+		</LinearLayout>
+
+	</ScrollView>
+
+</LinearLayout>
+

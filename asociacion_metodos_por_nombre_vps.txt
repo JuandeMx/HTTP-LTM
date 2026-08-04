@@ -1,0 +1,93 @@
+================================================================================
+GUÍA DE ASOCIACIÓN DE MÉTODOS POR NOMBRE DE MÁQUINA EN LA APP ANDROID
+================================================================================
+
+1. ¿CÓMO SOLICITA LA APP LAS CONFIGURACIONES POR NOMBRE DE MÁQUINA?
+--------------------------------------------------------------------------------
+Ahora el Servidor Maestro permite a la App Android consultar directamente por el NOMBRE comercial de la VPS (por ejemplo "Brasil 1", "México 2", "EEUU", etc.):
+
+   GET http://187.127.17.250:8080/api/methods?node_name=Brasil 1
+
+El servidor buscará la máquina registrada con ese nombre, tomará su IP pública, su Puerto SSH, su Dominio CF y su Dominio CFT, y le entregará a la App ÚNICAMENTE los 7 Métodos procesados para esa ubicación.
+
+
+2. EJEMPLO DE RESPUESTA JSON PARA LA APP CUANDO PIDE "node_name=Brasil 1":
+--------------------------------------------------------------------------------
+La App recibe un JSON donde `vps_name` indica a qué máquina pertenece:
+
+[
+  {
+    "name": "PERSONAL CF 1",
+    "vps_name": "Brasil 1",
+    "ssh_host": "200.150.10.5",
+    "ssh_port": 80,
+    "protocol": "SSL + Payload (WebSocket)",
+    "sni": "br1.tudominio.com",
+    "payload": "MKCOL / HTTP/1.9[lf]Host: recargas.personal.com.ar[lf]Expect: 100-continue[crlf][crlf][split][crlf][crlf]GET- // HTTP/1.1[crlf]Host: br1.tudominio.com[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]"
+  },
+  {
+    "name": "PERSONAL CFT 1",
+    "vps_name": "Brasil 1",
+    "ssh_host": "200.150.10.5",
+    "ssh_port": 80,
+    "protocol": "HTTP DIRECT / PAYLOAD",
+    "sni": "d55555.cloudfront.net",
+    "payload": "GET / HTTP/1.1[crlf]Host: recargas.personal.com.ar[crlf][crlf][split][crlf][crlf]GET- / HTTP/1.1[crlf]Host: [host][lf][lf]GET /suareznet HTTP/1.1[crlf]Host: d55555.cloudfront.net[lf]Connection: Upgrade[lf]Upgrade: websocket[lf]User-Agent: Googlebot/2.1 (+http://www.google.com/bot.html)[lf][lf]"
+  }
+]
+
+
+3. CÓDIGO JAVA ANDROID PARA OBTENER LOS MÉTODOS DE LA MÁQUINA SELECCIONADA
+--------------------------------------------------------------------------------
+En tu interfaz de usuario Android, el cliente selecciona en un menú desplegable o lista: "Brasil 1".
+
+La App ejecuta esta función enviando el nombre de la máquina elegida:
+
+```java
+public static void cargarConfiguracionesDeServidor(String serverName) {
+    try {
+        // Codificar el nombre por si tiene espacios (ej: "Brasil 1" -> "Brasil%201")
+        String encodedName = URLEncoder.encode(serverName, "UTF-8");
+        String apiUrl = "http://187.127.17.250:8080/api/methods?node_name=" + encodedName;
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(apiUrl).get().build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("MAXIMUS", "Error al conectar con el Maestro", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    String json = response.body().string();
+                    JSONObject obj = new JSONObject(json);
+                    JSONArray methods = obj.getJSONArray("methods");
+
+                    // Rellenar la lista de métodos de la App para ese servidor
+                    for (int i = 0; i < methods.length(); i++) {
+                        JSONObject m = methods.getJSONObject(i);
+                        String metodoNombre = m.getString("name");
+                        String ipMaquina = m.getString("ssh_host");
+                        int puerto = m.getInt("ssh_port");
+                        String sni = m.getString("sni");
+                        String payload = m.getString("payload");
+
+                        Log.d("MAXIMUS", "Cargado " + metodoNombre + " para " + serverName + " | IP: " + ipMaquina);
+                    }
+                }
+            }
+        });
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+```
+
+4. VENTAJAS DE ASOCIAR POR NOMBRE EN LUGAR DE IP
+--------------------------------------------------------------------------------
+ - **Claridad**: Tu cliente en la App ve en la pantalla opciones amigables como `Brasil 1`, `México 1`, `Argentina`, etc.
+ - **Aislamiento Total**: Al elegir un servidor, la App solo carga sus 7 métodos correspondientes.
+ - **Cero Trabajo Manual**: Si editas el Dominio CF o CFT de "Brasil 1" en el Panel Web, la siguiente vez que la App pida `node_name=Brasil 1`, recibirá automáticamente los nuevos dominios en sus 7 métodos.

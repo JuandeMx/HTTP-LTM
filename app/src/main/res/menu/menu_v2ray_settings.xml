@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_toggle_visual"
+        android:icon="@drawable/ic_code"
+        android:title="Modo Visual"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_paste"
+        android:icon="@drawable/ic_clipboard"
+        android:title="Pegar"
+        app:showAsAction="always" />
+</menu>

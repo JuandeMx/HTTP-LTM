@@ -1,0 +1,88 @@
+================================================================================
+MANUAL DE INTEGRACIÓN MULTI-NODO CON ETIQUETAS DINÁMICAS [CF], [CFT], [IP]
+================================================================================
+
+1. ¿CÓMO FUNCIONA EL REEMPLAZO AUTOMÁTICO EN EL PANEL Y SERVIDORES?
+--------------------------------------------------------------------------------
+El Panel Maestro almacena los 7 Métodos de Conexión base como PLANTILLAS. 
+Cada plantilla contiene palabras clave especiales:
+ - [CF]  / [HOST]       -> Se reemplaza por el Dominio VPS / Cloudflare de esa máquina.
+ - [CFT] / [CLOUDFRONT] -> Se reemplaza por el Dominio CloudFront de esa máquina.
+ - [IP]                -> Se reemplaza por la IP pública del servidor VPS.
+
+Cuando registras o vinculas N servidores VPS en el panel (por ejemplo: México 1, México 2, Brasil, Argentina, etc.), el Panel Maestro autogenera y entrega 7 Métodos por CADA Máquina registrada.
+
+Por lo tanto:
+ - Si tienes 1 VPS -> La App recibe 7 Métodos de Conexión.
+ - Si tienes 2 VPS -> La App recibe 14 Métodos de Conexión (7 etiquetados para VPS 1 y 7 para VPS 2).
+ - Si tienes N VPS -> La App recibe (N * 7) Métodos de Conexión.
+
+
+2. ¿CÓMO DEBE SOLICITAR LOS MÉTODOS LA APP ANDROID?
+--------------------------------------------------------------------------------
+La aplicación Android puede obtener los métodos en dos modos:
+
+MODO A: CONSULTA GENERAL (Obtiene todas las configuraciones de todas las máquinas)
+   Endpoint: GET http://<IP_MAESTRO>:8080/api/methods
+   Resultado: Devuelve los 7 métodos multiplicados por cada VPS registrada, ya con [CF], [CFT] y [IP] reemplazados por sus valores reales.
+
+MODO B: CONSULTA POR MÁQUINA ESPECÍFICA (Recomendado para servidores individuales)
+   Endpoint: GET http://<IP_MAESTRO>:8080/api/methods?node_ip=<IP_DE_LA_MAQUINA>
+   Resultado: Devuelve ÚNICAMENTE los 7 métodos pertenecientes a esa máquina específica, ya compilados con su SSH Host, Dominio Cloudflare y CloudFront.
+
+
+3. ESTRUCTURA DEL JSON DEVUELTO A LA APP ANDROID
+--------------------------------------------------------------------------------
+Cada método entregado por la API incluye el Payload y SNI completamente procesados:
+
+[
+  {
+    "id": 184729381,
+    "name": "[México 1] PERSONAL CF 1",
+    "ssh_host": "187.127.17.250",
+    "ssh_port": 80,
+    "protocol": "SSL + Payload (WebSocket)",
+    "sni": "www.fahorro.com",
+    "payload": "MKCOL / HTTP/1.9[lf]Host: recargas.personal.com.ar[lf]Expect: 100-continue[crlf][crlf][split][crlf][crlf]GET- // HTTP/1.1[crlf]Host: mx1.tudominio.com[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]",
+    "mx_content": "<base64_configuracion_descargable>"
+  },
+  {
+    "id": 298471928,
+    "name": "[Brasil 1] PERSONAL CFT 1",
+    "ssh_host": "200.150.10.5",
+    "ssh_port": 80,
+    "protocol": "HTTP DIRECT / PAYLOAD",
+    "sni": "br1.cloudfront.net",
+    "payload": "GET / HTTP/1.1[crlf]Host: recargas.personal.com.ar[crlf][crlf][split][crlf][crlf]GET- / HTTP/1.1[crlf]Host: [host][lf][lf]GET /suareznet HTTP/1.1[crlf]Host: d1234abcd.cloudfront.net[lf]Connection: Upgrade[lf]Upgrade: websocket[lf]User-Agent: Googlebot/2.1 (+http://www.google.com/bot.html)[lf][lf]",
+    "mx_content": "<base64_configuracion_descargable>"
+  }
+]
+
+
+4. PROCESAMIENTO INTERNO DENTRO DE LA APLICACIÓN ANDROID (JAVA)
+--------------------------------------------------------------------------------
+En tu código Java (SocksHttp / MaximusApiManager), al recibir cada objeto JSON:
+
+```java
+String sshHost = methodJson.getString("ssh_host");
+int sshPort = methodJson.getInt("ssh_port");
+String sni = methodJson.getString("sni");
+String rawPayload = methodJson.getString("payload");
+
+// 1. Reemplazar saltos de línea codificados de vuelta a saltos reales
+String finalPayload = rawPayload.replace("[crlf]", "\r\n").replace("[lf]", "\n");
+
+// 2. Asignar a las preferencias globales de conexión de la App
+SharedPreferences.Editor editor = prefs.edit();
+editor.putString("sshServer", sshHost);
+editor.putString("sshPort", String.valueOf(sshPort));
+editor.putString("customSNI", sni);
+editor.putString("proxyPayload", finalPayload);
+editor.putBoolean("use_ssl", methodJson.getString("protocol").contains("SSL"));
+editor.putBoolean("use_payload", true);
+editor.apply();
+```
+
+Con este mecanismo automático:
+ 1. No necesitas escribir Payloads ni SNIs de 1x1 por cada servidor nuevo.
+ 2. Al agregar una máquina VPS con su IP, Dominio Cloudflare y Dominio CloudFront en el Panel Web, el servidor genera de inmediato los 7 métodos personalizados para esa ubicación.

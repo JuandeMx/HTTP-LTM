@@ -1,0 +1,75 @@
+================================================================================
+GUÍA DE INTEGRACIÓN OPCCIÓN B: CONSULTA POR MÁQUINA ESPECÍFICA EN LA APP
+================================================================================
+
+1. ¿CÓMO EDITA EL PANEL LOS DOMINIOS CF Y CFT DE UNA MAQUINA SIN REINSTALAR?
+--------------------------------------------------------------------------------
+En la pestaña "Servidores VPS (Multi-Nodo)" de tu panel web:
+ 1. Cada servidor VPS tiene un botón amarillo de "Editar".
+ 2. Al hacer clic, se abre una ventana modal donde puedes cambiar el Dominio Cloudflare ([CF]) o el Dominio CloudFront ([CFT]) instantáneamente.
+ 3. Al hacer clic en "Guardar Cambios de Dominios", la API `/api/vps/edit` actualiza la base de datos y vuelve a compilar todas las configuraciones al instante, SIN REINSTALAR NADA EN EL SERVIDOR SSH.
+
+
+2. ¿CÓMO SOLICITA LA APP ANDROID LAS 7 CONFIGURACIONES DE UNA MÁQUINA ESPECÍFICA?
+--------------------------------------------------------------------------------
+Para la Opción B (Consulta por Máquina), la App Android debe pasar el parámetro `node_ip` en la solicitud HTTP GET:
+
+   GET http://187.127.17.250:8080/api/methods?node_ip=IP_DE_LA_MAQUINA
+
+Ejemplo:
+ - Si quieres pedir las configuraciones para la VPS con IP 200.150.10.5:
+   `GET http://187.127.17.250:8080/api/methods?node_ip=200.150.10.5`
+
+
+3. CÓDIGO JAVA EJEMPLO PARA TU APLICACIÓN ANDROID
+--------------------------------------------------------------------------------
+En tu App Android (por ejemplo dentro de `MaximusApiManager.java` o `SocksHttpMainActivity.java`), puedes consultar los métodos especificando la IP de la máquina conectada:
+
+```java
+public static void fetchMethodsForNode(Context context, String masterUrl, String nodeIp) {
+    String apiUrl = masterUrl + "/api/methods?node_ip=" + nodeIp;
+    
+    Request request = new Request.Builder()
+            .url(apiUrl)
+            .get()
+            .build();
+
+    new OkHttpClient().newCall(request).enqueue(new Callback() {
+        @Override
+        public void onFailure(Call call, IOException e) {
+            Log.e("MAXIMUS_API", "Error descargando métodos para la IP: " + nodeIp, e);
+        }
+
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+            if (response.isSuccessful() && response.body() != null) {
+                String jsonStr = response.body().string();
+                try {
+                    JSONObject obj = new JSONObject(jsonStr);
+                    JSONArray methods = obj.getJSONArray("methods");
+
+                    // Aquí la App ya recibe las 7 configuraciones listas
+                    for (int i = 0; i < methods.length(); i++) {
+                        JSONObject m = methods.getJSONObject(i);
+                        String name = m.getString("name");
+                        String sshHost = m.getString("ssh_host"); // Será la IP de la máquina (ej: 200.150.10.5)
+                        int sshPort = m.getInt("ssh_port");
+                        String sni = m.getString("sni");          // Será el Dominio CF o CFT editado en el panel
+                        String payload = m.getString("payload");  // Tendrá [CF] o [CFT] reemplazados automáticamente
+                        
+                        Log.d("MAXIMUS_API", "Método listo: " + name + " | Host: " + sshHost + " | SNI: " + sni);
+                    }
+                } catch (Exception e) {
+                    Log.e("MAXIMUS_API", "Error parseando JSON", e);
+                }
+            }
+        }
+    });
+}
+```
+
+4. RESUMEN DE FUNCIONALIDAD AUTOMÁTICA
+--------------------------------------------------------------------------------
+ 1. Registras o editas la VPS en el panel ingresando su Dominio CF o CFT.
+ 2. La App llama a `/api/methods?node_ip=IP_DE_LA_MAQUINA`.
+ 3. El Servidor Maestro detecta la IP, busca sus Dominios CF/CFT y le entrega a la App las 7 configuraciones completamente procesadas y listas para conectar.

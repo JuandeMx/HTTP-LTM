@@ -1,0 +1,35 @@
+# Gradle build outputs & caches
+.gradle/
+build/
+app/build/
+service/build/
+style/build/
+proxyclienthttpltm/build/
+.cxx/
+service/.cxx/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Generated binary & temp files
+*.class
+*.hprof
+*.apk
+*.jks
+*.keystore
+*.so
+DTunnel_repo/
+HTTP ltm split/
+SlipNet_temp/
+gopath/
+go/
+tunnel-go/
+v2ray-go/
+hysteria-go/
+libhysteria/
+libtunnel/
+libv2ray/
+service/src/main/jniLibs/

@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#07080B">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_horizontal">
+
+        <!-- 1. CENTER CONNECTION CIRCLE BUTTON & STATUS INDICATOR -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp">
+
+            <!-- CIRCULAR CONNECTION BUTTON WITH ANIMATION RING -->
+            <FrameLayout
+                android:id="@+id/activity_starterButtonMainLayout"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <!-- OUTER PROGRESS RING (visible during connection) -->
+                <ProgressBar
+                    android:id="@+id/progressRingConnection"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+
+                <!-- INNER CIRCLE BACKGROUND -->
+                <View
+                    android:id="@+id/circleBackground"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_circle_disconnected" />
+
+                <!-- SHIELD ICON -->
+                <ImageView
+                    android:id="@+id/imgShieldCenter"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_shield_logo"
+                    app:tint="#4A54E1" />
+
+                <!-- HIDDEN ORIGINAL BUTTON FOR BACKWARD COMPATIBILITY -->
+                <Button
+                    android:id="@+id/activity_starterButtonMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:text="" />
+            </FrameLayout>
+
+            <!-- CONNECTION LABEL UNDER CIRCLE -->
+            <TextView
+                android:id="@+id/txtConnectLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TOCA PARA CONECTAR"
+                android:textColor="#5A6078"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"
+                android:layout_marginTop="12dp" />
+
+            <!-- STATUS CAPSULE PILL -->
+            <LinearLayout
+                android:id="@+id/statusCapsule"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/bg_status_capsule"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/statusText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="● DESCONECTADO"
+                    android:textColor="#8C93A6"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 2. MAIN CONFIGURATION & CREDENTIALS CARD -->
+        <LinearLayout
+            android:id="@+id/configBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_modern_dark"
+            android:padding="20dp"
+            android:layout_marginBottom="16dp">
+
+            <!-- LEVEL 1: SERVER / VPS NODE SELECTOR -->
+            <LinearLayout
+                android:id="@+id/cardServerSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="12dp"
+                android:background="@drawable/bg_pill_button"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_flag_config"
+                    android:padding="6dp"
+                    android:background="@drawable/bg_status_capsule"
+                    app:tint="#4A54E1" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SERVIDOR (MÁQUINA VPS)"
+                        android:textColor="#70768A"
+                        android:textSize="10sp"
+                        android:letterSpacing="0.1"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtSelectedServerName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SELECCIONAR SERVIDOR"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#1C1E2B"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- LEVEL 2: METHOD SELECTOR ITEM -->
+            <LinearLayout
+                android:id="@+id/cardConfigSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="12dp"
+                android:background="@drawable/bg_pill_button"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_flag_config"
+                    android:padding="6dp"
+                    android:background="@drawable/bg_status_capsule" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MÉTODO DE CONEXIÓN"
+                        android:textColor="#70768A"
+                        android:textSize="10sp"
+                        android:letterSpacing="0.1"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtSelectedConfigName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SELECCIONAR MÉTODOS"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chevron_right" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#1C1E2B"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- USUARIO INPUT FIELD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="USUARIO"
+                    android:textColor="#70768A"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.1"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_user_person"
+                        android:layout_marginEnd="8dp" />
+
+                    <EditText
+                        android:id="@+id/inputUsername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nombre de usuario"
+                        android:textColorHint="#4A5063"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:singleLine="true"
+                        android:background="@null"
+                        android:padding="8dp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#282C3D" />
+            </LinearLayout>
+
+            <!-- CONTRASEÑA INPUT FIELD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CONTRASEÑA"
+                    android:textColor="#70768A"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.1"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_key_lock"
+                        android:layout_marginEnd="8dp" />
+
+                    <EditText
+                        android:id="@+id/inputPassword"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="••••••••"
+                        android:textColorHint="#4A5063"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:inputType="textPassword"
+                        android:singleLine="true"
+                        android:background="@null"
+                        android:padding="8dp" />
+
+                    <ImageView
+                        android:id="@+id/btnTogglePassword"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_eye_show"
+                        android:padding="2dp"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#282C3D" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <!-- 3. BOTTOM TELEMETRY METRICS CARD -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_modern_dark"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginBottom="12dp">
+
+                <!-- METRIC 1: RED -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_network_signal"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Red: "
+                        android:textColor="#70768A"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/txtNetworkType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WIFI"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- METRIC 2: PING -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_ping_speed"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ping: "
+                        android:textColor="#70768A"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/txtPingMs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="00"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <!-- METRIC 3: IP -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_location_pin"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="IP: "
+                        android:textColor="#70768A"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/txtIpAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="127.0.0.1"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- METRIC 4: VERSION -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_version_git"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Versión: "
+                        android:textColor="#70768A"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/txtAppVersion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="188/4.5.8"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- HIDDEN COMPATIBILITY VIEWS (KEEPING BACKEND FUNCTIONALITY INTACT) -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone">
+
+            <Spinner android:id="@+id/spinnerMethods" android:layout_width="0dp" android:layout_height="0dp" />
+            <EditText android:id="@+id/activity_mainInputUnified" android:layout_width="0dp" android:layout_height="0dp" />
+            <CheckBox android:id="@+id/chkUsePayload" android:layout_width="0dp" android:layout_height="0dp" />
+            <CheckBox android:id="@+id/chkSSL" android:layout_width="0dp" android:layout_height="0dp" />
+            <CheckBox android:id="@+id/chkEnhanced" android:layout_width="0dp" android:layout_height="0dp" />
+            <CheckBox android:id="@+id/chkSlowDns" android:layout_width="0dp" android:layout_height="0dp" />
+            <CheckBox android:id="@+id/chkEnableDNS" android:layout_width="0dp" android:layout_height="0dp" />
+            <CheckBox android:id="@+id/chkUdpCustom" android:layout_width="0dp" android:layout_height="0dp" />
+            <CheckBox android:id="@+id/chkPsiphon" android:layout_width="0dp" android:layout_height="0dp" />
+            <CheckBox android:id="@+id/chkV2ray" android:layout_width="0dp" android:layout_height="0dp" />
+            <LinearLayout android:id="@+id/adBannerMainContainer" android:layout_width="0dp" android:layout_height="0dp" />
+            <LinearLayout android:id="@+id/activity_mainNoteLayout" android:layout_width="0dp" android:layout_height="0dp" />
+            <WebView android:id="@+id/activity_mainNoteWebView" android:layout_width="0dp" android:layout_height="0dp" />
+            <TextView android:id="@+id/uploadText" android:layout_width="0dp" android:layout_height="0dp" />
+            <TextView android:id="@+id/downloadText" android:layout_width="0dp" android:layout_height="0dp" />
+            <TextView android:id="@+id/pingText" android:layout_width="0dp" android:layout_height="0dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

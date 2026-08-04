@@ -1,0 +1,96 @@
+================================================================================
+ESPECIFICACIÓN DE ARQUITECTURA Y REQUERIMIENTOS PARA LA APLICACIÓN ANDROID
+SISTEMA DE CONFIGURACIONES SEPARADAS POR MÁQUINA VPS
+================================================================================
+
+1. CONCEPTO GENERAL Y OBJETIVO
+--------------------------------------------------------------------------------
+El objetivo es que la Aplicación Android organice la experiencia del usuario en 
+DOS NIVELES DE SELECCIÓN:
+
+  NIVEL 1: SELECCIÓN DE SERVIDOR (MÁQUINA VPS)
+  El usuario elige la ubicación física o nombre de la máquina, por ejemplo:
+   - "🇲🇽 México 1"
+   - "🇧🇷 Brasil 1"
+   - "🇦🇷 Argentina 1"
+
+  NIVEL 2: SELECCIÓN DE MÉTODO DE CONEXIÓN
+  Al elegir una máquina, la App muestra ÚNICAMENTE las 7 configuraciones
+  pertenecientes a ESA MÁQUINA ESPECÍFICA (PERSONAL CF 1 a 3, PERSONAL CFT 1 a 4).
+
+
+2. PASO A PASO: LO QUE LA APP ANDROID DEBE HACER
+--------------------------------------------------------------------------------
+
+PASO 1: CONSULTAR LA LISTA DE MÁQUINAS VPS DISPONIBLES AL SERVIDOR MAESTRO
+   Al abrir la App o iniciar la sincronización, la App solicita la lista de servidores:
+   GET http://187.127.17.250:8080/api/nodes
+
+   Respuesta JSON recibida:
+   {
+     "nodes": [
+       { "id": 101, "name": "Brasil 1", "ip": "200.150.10.5", "domain_cf": "br1.tudominio.com", "domain_cft": "d1111.cloudfront.net" },
+       { "id": 102, "name": "México 1", "ip": "187.127.17.250", "domain_cf": "mx1.tudominio.com", "domain_cft": "d2222.cloudfront.net" }
+     ]
+   }
+
+   Acción de la App: Rellena el Spinner/Dropdown o Selector de Servidores en pantalla 
+   con los nombres de los nodos ("Brasil 1", "México 1").
+
+
+PASO 2: CONSULTAR MÉTODOS FILTRADOS AL SELECCIONAR UNA MÁQUINA
+   Cuando el usuario en la App selecciona la máquina "Brasil 1", la App solicita 
+   las 7 configuraciones compiladas para esa máquina específica:
+
+   GET http://187.127.17.250:8080/api/methods?node_name=Brasil 1
+
+   El Servidor Maestro responderá ÚNICAMENTE los 7 Métodos donde:
+    - `ssh_host` ya fue reemplazado con la IP real de "Brasil 1" (`200.150.10.5`).
+    - `sni` y `payload` contienen las sustituciones de `[CF]` por `br1.tudominio.com` 
+      y de `[CFT]` por `d1111.cloudfront.net`.
+
+   Respuesta JSON recibida:
+   {
+     "methods": [
+       {
+         "name": "PERSONAL CF 1",
+         "vps_name": "Brasil 1",
+         "ssh_host": "200.150.10.5",
+         "ssh_port": 80,
+         "protocol": "SSL + Payload (WebSocket)",
+         "sni": "br1.tudominio.com",
+         "payload": "MKCOL / HTTP/1.9[lf]Host: recargas.personal.com.ar[lf]Expect: 100-continue[crlf][crlf][split][crlf][crlf]GET- // HTTP/1.1[crlf]Host: br1.tudominio.com[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]"
+       },
+       ... (los otros 6 métodos para Brasil 1)
+     ]
+   }
+
+
+PASO 3: APLICAR LA CONFIGURACIÓN SELECCIONADA EN LA CONEXIÓN SSH/VPN
+   Cuando el cliente hace clic en "CONECTAR" en la App, la App lee los parámetros 
+   del método elegido y aplica la configuración en el cliente SSH interno:
+
+   - `sshServer` = "200.150.10.5" (Tomado de ssh_host)
+   - `sshPort`   = 80 (Tomado de ssh_port)
+   - `customSNI`  = "br1.tudominio.com" (Tomado de sni)
+   - `proxyPayload` = Reemplazar "[crlf]" por "\r\n" y "[lf]" por "\n" en el payload string.
+
+
+3. RESUMEN DEL FLUJO EN LA APP ANDROID
+--------------------------------------------------------------------------------
+ [ Selector de Máquina: "Brasil 1" ]
+           │
+           ▼ (App solicita: GET /api/methods?node_name=Brasil 1)
+ [ Recibe 7 Métodos procesados para Brasil 1 ]
+           │
+           ▼ (El usuario elige: "PERSONAL CF 1")
+ [ Rellena IP, SNI, Payload y Conecta VPN a Brasil 1 ]
+
+
+4. BENEFICIO PRINCIPAL DE ESTA ESTRUCTURA
+--------------------------------------------------------------------------------
+1. Mantenimiento Cero en la App: La App no necesita tener URLs ni IPs hardcoded. 
+   Todo se consulta dinámicamente al Servidor Maestro.
+2. Cambio de Dominios sin Actualizar la App: Si editas los dominios CF o CFT de 
+   "Brasil 1" en el Panel Web, el cambio aplica de inmediato para todos tus usuarios 
+   la próxima vez que se conecten.

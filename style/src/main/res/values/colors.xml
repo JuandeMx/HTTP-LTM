@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	
+	<color name="gray_light">#424242</color>
+	<color name="blue">#3F51B5</color>
+	<color name="blue_light">#7986CB</color>
+	<color name="gray">#9E9E9E</color>
+	<color name="black_light">#1A1B22</color>
+	<color name="white">#ffffff</color>
+	<color name="red">#FF4081</color>
+	<color name="yellow">#FFC107</color>
+	<color name="green">#00E676</color>
+	
+	<!-- MAXIMUS CUSTOM Premium Palette -->
+	<color name="colorPrimary">#0B0E14</color>
+	<color name="colorPrimaryDark">#06080C</color>
+	<color name="colorSecondary">#151B26</color>
+	<color name="colorAccent">#3A9D9B</color>
+	<color name="colorAccentLight">#78D6D4</color>
+	<color name="colorAccentPink">#F7929A</color>
+	
+	<color name="textColorPrimary">#F8FAFC</color>
+	<color name="textColorSecondary">#94A3B8</color>
+	<color name="colorTextEnabled">#F8FAFC</color>
+	<color name="colorTextDisabled">#475569</color>
+	
+	<!-- Fallback fix if text_color was missing -->
+	<color name="colorText">@color/textColorPrimary</color>
+	<color name="colorPrimaryBackground">#0B0E14</color>
+	<color name="colorSecondaryBackground">#151B26</color>
+
+	<!-- Additional specific colors for MAXIMUS CUSTOM App -->
+	<color name="colorTabIndicator">#3A9D9B</color>
+	<color name="colorFab">#3A9D9B</color>
+	<color name="colorConnectButtonStroke">#3A9D9B</color>
+	
+	<!-- Stats Colors -->
+	<color name="colorUpload">#3A9D9B</color>
+	<color name="colorPing">#A78BFA</color>
+	<color name="colorDownload">#F7929A</color>
+	<color name="colorStatsBg">#151B26</color>
+</resources>

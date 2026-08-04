@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/colorPrimaryDark">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Payload"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#444444"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/editPayload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Payload"
+        android:textColorHint="#888888"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/editRemoteProxy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Remote Proxy (ip:port)"
+        android:textColorHint="#888888"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btnApplyPayload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Apply"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
+        android:textAllCaps="false" />
+
+</LinearLayout>

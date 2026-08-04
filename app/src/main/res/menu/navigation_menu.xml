@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	
+	<group android:id="@+id/grupo1">
+
+		<item
+			android:id="@+id/miViewActiveConfig"
+			android:icon="@drawable/ic_code"
+			android:title="Ver Configuración Activa"/>
+		
+    	<item
+       		android:id="@+id/miShareNet"
+			android:icon="@drawable/ic_wifi_tethering_black_24dp"
+        	android:title="Compartir internet"/>
+	
+    	<item android:id="@+id/miSettings"
+        	android:icon="@drawable/ic_settings"
+        	android:title="@string/settings"/>
+	
+	</group>
+	
+	
+	<group android:id="@+id/grupo2" android:title="Utility">
+		<item android:id="@+id/miPayload"
+			android:icon="@drawable/ic_settings"
+			android:title="Payload"/>
+			
+		<item android:id="@+id/miSNI"
+			android:icon="@drawable/ic_settings"
+			android:title="SNI"/>
+			
+		<item android:id="@+id/miUdpCustomSettings"
+			android:icon="@drawable/ic_settings"
+			android:title="Ajustes de Hysteria"
+			android:visible="true"/>
+			
+		<item android:id="@+id/miV2raySettings"
+			android:icon="@drawable/ic_settings"
+			android:title="V2ray Settings"
+			android:visible="true"/>
+			
+		<item android:id="@+id/miHWID"
+			android:icon="@drawable/ic_settings"
+			android:title="HWID"/>
+	</group>
+	
+
+	
+	<group android:id="@+id/grupo3">
+
+		<item android:id="@+id/miOptimizarBateria"
+			android:icon="@drawable/ic_battery"
+			android:title="Optimización de batería"/>
+		
+		<item android:id="@+id/miSendFeedback"
+			android:icon="@drawable/ic_bug_report_black_24dp"
+			android:title="@string/feedback"/>
+		
+		<item android:id="@+id/miAbout"
+			android:icon="@drawable/ic_event_note_black_24dp"
+			android:title="@string/about"/>
+		
+		<item android:id="@+id/miCheckUpdate"
+			android:icon="@drawable/ic_event_note_black_24dp"
+			android:title="@string/mi_check_update"/>
+	</group>
+	
+	
+</menu>

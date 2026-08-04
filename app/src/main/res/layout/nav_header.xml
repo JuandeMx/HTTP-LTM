@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@color/colorSecondary"
+	android:paddingTop="36dp"
+	android:paddingLeft="24dp"
+	android:paddingRight="24dp"
+	android:paddingBottom="24dp">
+
+	<com.slipkprojects.sockshttp.util.RoundedImageView
+		android:layout_width="76dp"
+		android:layout_height="76dp"
+		android:layout_marginBottom="12dp"
+		android:src="@drawable/ic_launcher"
+		android:scaleType="centerCrop"/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/app_name"
+		android:textStyle="bold"
+		android:textSize="20sp"
+		android:textColor="#F8FAFC"
+		android:letterSpacing="0.02"/>
+
+	<TextView
+		android:id="@+id/nav_headerAppVersion"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="v. 3.0"
+		android:textColor="@color/colorAccent"
+		android:textSize="12sp"
+		android:textStyle="bold"
+		android:background="@drawable/bg_card_dark"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:paddingTop="4dp"
+		android:paddingBottom="4dp"
+		android:layout_marginTop="6dp"/>
+
+</LinearLayout>

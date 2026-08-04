@@ -1,0 +1,109 @@
+========================================================================
+DIAGNÓSTICO DE ERROR: APP ANDROID NO CONECTA CON PANEL MAESTRO
+========================================================================
+Fecha: 2026-07-30 17:20 CST (México)
+VPS Maestro: 187.209.14.58:8080
+App Android: MAXIMUS Net (SocksHTTP modificado)
+
+========================================================================
+1. CONTEXTO
+========================================================================
+La aplicación Android de VPN "MAXIMUS Net" necesita conectarse al
+servidor Panel Maestro en http://187.209.14.58:8080 para descargar
+los métodos/perfiles de conexión (archivos cifrados .MX).
+
+Al abrir la app, esta llama a GET http://187.209.14.58:8080/api/methods
+para obtener la lista de configuraciones de VPN disponibles.
+
+========================================================================
+2. LOG COMPLETO DE LA APP ANDROID
+========================================================================
+[2026-07-30 17:16:49.531] [INFO] refreshMethodsFromMaster: Llamado con URL=http://187.209.14.58:8080
+[2026-07-30 17:16:49.542] [INFO] fetchMethods: INICIANDO DESCARGA DE MÉTODOS
+[2026-07-30 17:16:49.551] [INFO] fetchMethods: URL = http://187.209.14.58:8080/api/methods
+[2026-07-30 17:16:49.566] [INFO] fetchMethods: Master URL base = http://187.209.14.58:8080/
+[2026-07-30 17:16:49.572] [INFO] fetchMethods: Abriendo conexión HTTP...
+[2026-07-30 17:16:49.583] [INFO] fetchMethods: Esperando respuesta del servidor...
+
+--- (20 segundos de espera sin respuesta del servidor) ---
+
+[2026-07-30 17:17:09.618] [ERROR] fetchMethods: EXCEPCIÓN:
+  failed to connect to /187.209.14.58 (port 8080)
+  from /192.168.1.66 (port 41722) after 20000ms
+
+[2026-07-30 17:17:09.619] [ERROR] StackTrace:
+  java.net.SocketTimeoutException:
+  failed to connect to /187.209.14.58 (port 8080)
+  from /192.168.1.66 (port 41722) after 20000ms
+
+========================================================================
+3. PRUEBA DESDE LA COMPUTADORA (mismo resultado)
+========================================================================
+También se intentó conectar al mismo servidor desde la computadora
+local (Windows) usando PowerShell:
+
+  Invoke-WebRequest -Uri "http://187.209.14.58:8080/api/methods" -TimeoutSec 10
+
+Resultado: "La operación sobrepasó el tiempo de espera."
+
+Esto confirma que NO es un problema de la app Android ni del código Java.
+El problema es que el servidor 187.209.14.58 NO está respondiendo en el
+puerto 8080 desde internet.
+
+========================================================================
+4. DIAGNÓSTICO FINAL
+========================================================================
+El error es: java.net.SocketTimeoutException (timeout de 20 segundos)
+
+Esto significa que la conexión TCP ni siquiera se establece. El servidor
+NO rechaza la conexión (eso sería ConnectionRefused), simplemente NO
+RESPONDE. Esto indica una de estas causas:
+
+  A) El servicio "maximus-master-web" (Python en puerto 8080) NO ESTÁ
+     CORRIENDO en la VPS. Puede haberse caído al reiniciarse o al
+     importar el módulo mx_generator.py si falta la librería pycryptodome.
+
+  B) El firewall de la VPS (UFW) está bloqueando el puerto 8080 para
+     conexiones entrantes desde internet.
+
+  C) El proveedor del servidor (hosting/VPS) tiene un firewall externo
+     que está bloqueando el puerto 8080.
+
+========================================================================
+5. COMANDOS DE SOLUCIÓN (ejecutar en la terminal SSH de la VPS)
+========================================================================
+
+# Paso 1: Ver si el servicio web está corriendo
+systemctl status maximus-master-web
+
+# Paso 2: Si está caído, reiniciarlo
+systemctl restart maximus-master-web
+
+# Paso 3: Asegurar que el firewall permita el puerto 8080
+ufw allow 8080/tcp
+ufw reload
+
+# Paso 4: Verificar que Python está escuchando en el puerto
+ss -tlnp | grep 8080
+
+# Paso 5: Si el servicio falla por falta de pycryptodome, instalar
+pip3 install pycryptodome --break-system-packages
+
+# Paso 6: Reiniciar de nuevo
+systemctl restart maximus-master-web
+
+# Paso 7: Probar localmente en la VPS
+curl -s http://127.0.0.1:8080/api/methods
+
+========================================================================
+6. INFORMACIÓN TÉCNICA ADICIONAL
+========================================================================
+- IP de la VPS Maestro: 187.209.14.58
+- Puerto del Panel Web: 8080
+- Servicio systemd: maximus-master-web
+- Backend: Python 3 (master_server.py)
+- Ubicación del backend: /etc/MaximusVpsMx/core/master_server.py
+- Base de datos de métodos: /etc/MaximusVpsMx/connection_methods.db
+- IP local del celular Android: 192.168.1.66
+- Timeout configurado en la app: 20000ms (20 segundos)
+- La app NO tiene error de código, el problema es que el servidor no responde.

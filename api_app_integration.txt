@@ -1,0 +1,80 @@
+========================================================================
+FLUJO COMPLETO DE COMUNICACIÓN: PANEL MAESTRO <-> APP ANDROID
+========================================================================
+
+Esta guía explica técnicamente cómo el Panel Maestro genera, cifra y envía los métodos de conexión a tu aplicación Android (SocksHTTP), y cómo la app los procesa.
+
+------------------------------------------------------------------------
+DIAGRAMA DE FLUJO GENERAL
+------------------------------------------------------------------------
+
+  +-----------------------+              1. GET /api/methods
+  |                       | <------------------------------------------+
+  |     PANEL MAESTRO     |                                            |
+  |     (Python Web)      |              2. Envía JSON con perfiles    |
+  |                       | -----------------------------------------+ |
+  +-----------+-----------+                                          | |
+              |                                                      v |
+              | Cifra métodos al vuelo                         +-------+-------+
+              | usando mx_generator.py                         |               |
+              v                                                |  APP ANDROID  |
+  +-----------------------+                                    |  (SocksHTTP)  |
+  |  Archivo físico .mx   |                                    |               |
+  |  (downloads/perfil.mx)| <----------------------------------+-------+-------+
+  +-----------------------+      3. (Opcional) Descarga física         |
+                                                                       |
+                                 4. Descifra en memoria y lo aplica    v
+                                 +-------------------------------------+
+                                 | ConfigParser descifra los campos y  |
+                                 | configura el túnel automáticamente  |
+                                 +-------------------------------------+
+
+------------------------------------------------------------------------
+DETALLE DE PASOS Y ENDPOINTS
+------------------------------------------------------------------------
+
+PASO 1: LA APP ANDROID SOLICITA LA LISTA DE MÉTODOS
+La app de Android realiza una consulta HTTP GET al servidor Maestro:
+URL: http://187.209.14.58:8080/api/methods
+
+PASO 2: EL SERVIDOR MAESTRO PROCESA Y CIFRA
+Cuando llega la solicitud al servidor Maestro, éste ejecuta lo siguiente en su backend de Python:
+1. Lee las configuraciones de la base de datos local (/etc/MaximusVpsMx/connection_methods.db).
+2. Para cada configuración (ej. OXXOCEL IP MEXICO), toma el Host, Puerto, SNI y Payload.
+3. El módulo 'mx_generator.py' del Maestro genera un XML con el formato oficial de propiedades de la app.
+4. Cifra este XML usando AES-256-CBC, PBKDF2 y ofuscación XOR (laberinto).
+5. Convierte el resultado a un String en Base64.
+6. Envía de vuelta el JSON a la app móvil con este formato:
+
+   {
+     "methods": [
+       {
+         "id": 18239012,
+         "name": "OXXOCEL IP MEXICO",
+         "ssh_host": "78.14.139.83",
+         "ssh_port": 22,
+         "protocol": "SSL + Payload (WebSocket)",
+         "sni": "m.oxxocel.com",
+         "payload": "GET / ...",
+         "mx_content": "U2FsdGVkX19..."  <-- CADENA CIFRADA COMPLETA DEL ARCHIVO .MX
+       }
+     ]
+   }
+
+PASO 3: LA APP RECIBE E IMPORTA LA CONFIGURACIÓN (EN MEMORIA)
+Cuando el usuario selecciona el método "OXXOCEL IP MEXICO" en el Diálogo (ListView) de la aplicación de Android:
+1. La app toma el valor del string encriptado "mx_content".
+2. Ejecuta la función:
+   MaximusApiManager.importMxConfig(context, selectedMethod.mxContent);
+3. Esta función pasa el string cifrado a la clase `ConfigParser` de la app.
+4. `ConfigParser` descifra la cadena en memoria usando la contraseña nativa, lee las llaves (Host SSH, Puerto, SNI, Payload) y las aplica directamente en las configuraciones del túnel (SharedPreferences).
+5. ¡El túnel queda listo para conectar con los datos del perfil sin necesidad de guardar archivos físicos en el almacenamiento del celular!
+
+------------------------------------------------------------------------
+OPCIÓN B: DESCARGA DIRECTA DEL ARCHIVO FÍSICO .MX
+------------------------------------------------------------------------
+Si en lugar de sincronizar por la lista de la API prefieres que la app descargue el archivo físico `.mx` tal como lo hace el navegador:
+1. La app hace un GET directamente al enlace de descarga:
+   http://187.209.14.58:8080/downloads/OXXOCEL_IP_MEXICO.mx
+2. El servidor responde entregando el archivo cifrado.
+3. La app lee el contenido del archivo descargado (el texto cifrado) y se lo pasa a `MaximusApiManager.importMxConfig` para descifrarlo e importarlo en el túnel.

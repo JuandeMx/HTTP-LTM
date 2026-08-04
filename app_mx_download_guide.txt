@@ -1,0 +1,86 @@
+========================================================================
+GUÍA DE INTEGRACIÓN Y DESCARGA DE ARCHIVOS .MX EN ANDROID (SocksHTTP)
+========================================================================
+
+Tu aplicación ya tiene implementado el gestor 'MaximusApiManager' y la pantalla principal 'SocksHttpMainActivity'. Aquí te explico exactamente cómo se realiza la descarga, el almacenamiento y el listado de los perfiles .MX:
+
+------------------------------------------------------------------------
+OPCIÓN 1: Sincronización Automática por API (Recomendada y ya programada)
+------------------------------------------------------------------------
+En esta modalidad, la app no descarga archivos individuales al almacenamiento del celular, sino que lee todo la configuración en memoria directamente del backend Maestro, evitando llenar de archivos el dispositivo.
+
+Flujo de ejecución:
+1. Al abrir la app o presionar "Actualizar", la app llama a:
+   MaximusApiManager.fetchMethods(context, masterUrl, listener)
+
+2. Esto hace una petición GET a: http://<IP_MAESTRA>:8080/api/methods
+   Y recibe la lista de perfiles. Cada perfil contiene un campo "mx_content" que es la cadena cifrada AES de ese archivo.
+
+3. Listado en la App:
+   El método 'showMethodsPickerDialog()' crea un Diálogo con una lista (ListView).
+   La app carga la lista usando:
+   new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mMethodsList)
+
+4. Selección y Descifrado (Almacenamiento en SharedPreferences):
+   Al seleccionar un método, se llama a:
+   applySelectedMethod(selected)
+   
+   Internamente, si 'method.mxContent' no está vacío, ejecuta:
+   MaximusApiManager.importMxConfig(this, method.mxContent)
+   
+   Lo cual llama a 'ConfigParser.convertInputAndSave(stream, context)', descifra los campos en tiempo real (Host, Puerto, SNI, Payload) y los almacena directamente en la base de datos de configuraciones de la app (SharedPreferences).
+
+------------------------------------------------------------------------
+OPCIÓN 2: Descarga de Archivos Físicos .MX por Enlace HTTP
+------------------------------------------------------------------------
+Si deseas que el usuario pueda hacer clic en un enlace de descarga o que la app descargue el archivo físico .mx directamente a la carpeta de descargas del dispositivo:
+
+1. Ruta de descarga del archivo en el panel:
+   http://<IP_MAESTRA>:8080/downloads/<nombre_del_metodo_con_guiones_bajos>.mx
+   (Ejemplo: Si el método se llama "TELCEL SSL", la url es /downloads/TELCEL_SSL.mx)
+
+2. Código Kotlin/Java sugerido para descargar y cargar el archivo .MX:
+
+public static void downloadAndApplyMx(final Context context, String fileUrl) {
+    new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                java.net.URL url = new java.net.URL(fileUrl);
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(10000);
+                
+                if (conn.getResponseCode() == java.net.HttpURLConnection.HTTP_OK) {
+                    java.io.InputStream in = new java.io.BufferedInputStream(conn.getInputStream());
+                    
+                    // Leer el contenido del archivo cifrado
+                    java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, len);
+                    }
+                    in.close();
+                    
+                    final String mxEncryptedString = out.toString("UTF-8");
+                    
+                    // Aplicar y descifrar la configuración en la app
+                    new android.os.Handler(android.os.Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean success = MaximusApiManager.importMxConfig(context, mxEncryptedString);
+                            if (success) {
+                                android.widget.Toast.makeText(context, "✅ Configuración .MX descargada e importada!", android.widget.Toast.LENGTH_LONG).show();
+                            } else {
+                                android.widget.Toast.makeText(context, "❌ Error al descifrar el archivo .MX", android.widget.Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                Log.e("DownloadMX", "Error downloading file", e);
+            }
+        }
+    }).start();
+}
