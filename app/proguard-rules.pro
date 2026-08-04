@@ -40,6 +40,9 @@
 -dontwarn com.github.kimchangyoun.**
 -dontwarn com.slipkprojects.**
 
+# Conservar clases de la app y del servicio VPN para evitar que R8 renombre miembros JNI o tunelizador
+-keep class com.slipkprojects.** { *; }
+
 # Conservar clases de librerias criptograficas y SSH
 -keep class com.trilead.** { *; }
 -keep class net.i2p.crypto.** { *; }

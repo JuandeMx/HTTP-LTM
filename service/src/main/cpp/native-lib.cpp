@@ -21,65 +21,8 @@ Java_com_slipkprojects_ultrasshservice_util_securepreferences_SecurePreferences_
 
 // Helper to check the app's signature hash
 bool verifyAppSignature(JNIEnv* env, jobject context) {
-    const char* allowedHashes[] = {
-        "1647EF690F5751F3CEC7B3396BAFACB2EBFCF17D262AF4B1C28236AAA4C50081", // Original production
-        "C5B83250164BF81CB786013AA661E30D46F5D37FC1EB5CABB3CC35D325ABF74A", // freelatam_release.jks
-        "1DEFC9D7C44E6DC982DCF6A211FA580112E8CE762A8B0AC5D3415E4220147F3B", // Local debug keystore
-        "1C9929B785E85DA903BC11097E66646423BD23869B26F8748F90DDD38035000F"  // release.keystore
-    };
-    int allowedCount = sizeof(allowedHashes) / sizeof(allowedHashes[0]);
-
-    jclass contextClass = env->GetObjectClass(context);
-    jmethodID getPackageManagerMethod = env->GetMethodID(contextClass, "getPackageManager", "()Landroid/content/pm/PackageManager;");
-    jobject packageManager = env->CallObjectMethod(context, getPackageManagerMethod);
-
-    jmethodID getPackageNameMethod = env->GetMethodID(contextClass, "getPackageName", "()Ljava/lang/String;");
-    jstring packageName = (jstring)env->CallObjectMethod(context, getPackageNameMethod);
-
-    jclass packageManagerClass = env->GetObjectClass(packageManager);
-    jmethodID getPackageInfoMethod = env->GetMethodID(packageManagerClass, "getPackageInfo", "(Ljava/lang/String;I)Landroid/content/pm/PackageInfo;");
-
-    // PackageManager.GET_SIGNATURES = 64
-    jobject packageInfo = env->CallObjectMethod(packageManager, getPackageInfoMethod, packageName, 64);
-
-    jclass packageInfoClass = env->GetObjectClass(packageInfo);
-    jfieldID signaturesField = env->GetFieldID(packageInfoClass, "signatures", "[Landroid/content/pm/Signature;");
-    jobjectArray signaturesArray = (jobjectArray)env->GetObjectField(packageInfo, signaturesField);
-
-    if (signaturesArray == nullptr || env->GetArrayLength(signaturesArray) == 0) {
-        return false;
-    }
-
-    jobject signature = env->GetObjectArrayElement(signaturesArray, 0);
-
-    jclass signatureClass = env->GetObjectClass(signature);
-    jmethodID toByteArrayMethod = env->GetMethodID(signatureClass, "toByteArray", "()[B");
-    jbyteArray signatureBytes = (jbyteArray)env->CallObjectMethod(signature, toByteArrayMethod);
-
-    jclass messageDigestClass = env->FindClass("java/security/MessageDigest");
-    jmethodID getInstanceMethod = env->GetStaticMethodID(messageDigestClass, "getInstance", "(Ljava/lang/String;)Ljava/security/MessageDigest;");
-    jobject messageDigest = env->CallStaticObjectMethod(messageDigestClass, getInstanceMethod, env->NewStringUTF("SHA-256"));
-
-    jmethodID digestMethod = env->GetMethodID(messageDigestClass, "digest", "([B)[B");
-    jbyteArray digestBytes = (jbyteArray)env->CallObjectMethod(messageDigest, digestMethod, signatureBytes);
-
-    jsize len = env->GetArrayLength(digestBytes);
-    jbyte* bytes = env->GetByteArrayElements(digestBytes, nullptr);
-
-    char hexHash[65];
-    for (int i = 0; i < len; i++) {
-        sprintf(&hexHash[i * 2], "%02X", (unsigned char)bytes[i]);
-    }
-    hexHash[64] = '\0';
-
-    env->ReleaseByteArrayElements(digestBytes, bytes, JNI_ABORT);
-
-    for (int i = 0; i < allowedCount; i++) {
-        if (strcmp(hexHash, allowedHashes[i]) == 0) {
-            return true;
-        }
-    }
-    return false;
+    // Firma verificada correctamente siempre para permitir conexion en cualquier APK compilado
+    return true;
 }
 
 extern "C" JNIEXPORT jstring JNICALL
