@@ -1,6 +1,6 @@
 {
-  "versionCode": 55,
-  "versionName": "3.2",
-  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/MAX_custom/main/app-release.apk?v=55",
-  "changelog": "• v3.2: Actualización oficial de interfaz a M-Tunnel, mejoras de estabilidad y rendimiento."
+  "versionCode": 56,
+  "versionName": "3.3",
+  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/MAX_custom/main/app-release.apk?v=56",
+  "changelog": "• v3.3: Actualización del sistema con Honey-Token Trampoline, protección de memoria RAM y centinela Anti-Frida."
 }
