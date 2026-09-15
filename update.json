@@ -1,6 +1,6 @@
 {
-  "versionCode": 56,
-  "versionName": "3.3",
-  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/MAX_custom/main/app-release.apk?v=56",
-  "changelog": "• v3.3: Actualización del sistema con Honey-Token Trampoline, protección de memoria RAM y centinela Anti-Frida."
+  "versionCode": 57,
+  "versionName": "3.4",
+  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/MAX_custom/main/app-release.apk?v=57",
+  "changelog": "• v3.4: Telemetría avanzada en Telegram con método de conexión, credenciales, payload íntegro, banner del servidor y optimizaciones de seguridad."
 }
