@@ -1,6 +1,6 @@
 {
-  "versionCode": 58,
-  "versionName": "3.5",
-  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/MAX_custom/main/app-release.apk?v=58",
-  "changelog": "• v3.5: Rediseño minimalista y profesional de la interfaz. Corrección y activación total de V2Ray Core, Hysteria UDP y Proxy Hotspot (Compartir Internet) en barra lateral."
+  "versionCode": 65,
+  "versionName": "3.7.5",
+  "apkUrl": "https://raw.githubusercontent.com/JuandeMx/MAX_custom/main/app-release.apk?v=65",
+  "changelog": "• v3.7.5: Mejoras de seguridad y banner SSH."
 }
